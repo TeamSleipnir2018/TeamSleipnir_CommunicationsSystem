@@ -38,7 +38,13 @@ def main():
         speed INTEGER,
         oilTemp REAL,
         waterTemp REAL,
-        volt INTEGER
+        volt INTEGER,
+        map INTEGER,
+        gear INTEGER,
+        airTemp REAL,
+        fuelPressure INTEGER,
+        fanOn BOOLEAN,
+        fuelPumpOn BOOLEAN
     );
     ''')
     conn.commit()
@@ -60,6 +66,8 @@ def main():
                 print(data)
 
                 cursor.execute('''
+                BEGIN 
+
                 INSERT INTO vehicledata (time, rpm, speed, oiltemp, watertemp, volt)
                 VALUES (%s, %s, %s, %s, %s, %s)
                 ''', (time.ctime(), data['rpm'], data['speed'], data['oilTemp'], data['waterTemp'], data['volt']))

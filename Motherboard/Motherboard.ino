@@ -22,6 +22,7 @@ Written by Einar Arnason
 
 // CAN bus driver
 CanListener canListener;
+CAN_filter_t mask;
 
 // GPS object
 Adafruit_GPS GPS(&Serial3);
@@ -36,7 +37,7 @@ boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 
 // SD card variables
-SdFat sd;
+SdFatSdio sd;
 File outFile;
 char filename[20];
 
@@ -89,7 +90,10 @@ void setup() {
     };
 
     // Initialize the CAN bus
-	Can0.begin(500000);
+	mask.flags.extended = 0;
+	mask.flags.remote = 0;
+	mask.id = 0;
+	Can0.begin(500000, mask, 29, 30);
 	Can0.attachObj(&canListener);
 	canListener.attachGeneralHandler();
 
@@ -208,24 +212,37 @@ void loop() {
 		}
 	}
 
+	long time = now();
+
 	for (int i = 0; i < NUMBER_OF_MESSAGES; i++) {
 		switch (i) {
 		case 0 :
 			sprintf(payload,
-				"{\"rpm\": %d, \"speed\": %d, \"oilTemp\": %0.2f, \"waterTemp\": %0.2f, \"volt\": %0.2f}!",
+				"{\"time\": %d, \"rpm\": %d, \"volt\": %0.2f, \"waterTemp\": %0.2f, \"speed\": %0.2f}!",
+				time,
 				canListener.vehicle.rpm,
-				canListener.vehicle.speed,
-				canListener.vehicle.oilTemp,
+				canListener.vehicle.voltage,
 				canListener.vehicle.waterTemp,
-				canListener.vehicle.voltage);
+				canListener.vehicle.speed);
+			break;
 		case 1 :
 			sprintf(payload,
-				"{\"rpm\": %d, \"speed\": %d, \"oilTemp\": %0.2f, \"waterTemp\": %0.2f, \"volt\": %0.2f}!",
-				canListener.vehicle.rpm,
-				canListener.vehicle.speed,
+				"{\"time\": %d, \"oilTemp\": %d, \"gear\": %0.2f, \"airTemp\": %0.2f, \"map\": %0.2f}!",
+				time,
 				canListener.vehicle.oilTemp,
-				canListener.vehicle.waterTemp,
-				canListener.vehicle.voltage);
+				canListener.vehicle.gear,
+				canListener.vehicle.airTemp,
+				canListener.vehicle.map);
+			break;
+		case 2 :
+			sprintf(payload,
+				"{\"time\": %d, \"ecuTemp\": %d, \"fuelPressure\": %0.2f, \"fanOn\": %0.2f, \"fuelPumpOn\": %0.2f}!",
+				time,
+				canListener.vehicle.ecuTemp,
+				canListener.vehicle.fuelPressure,
+				canListener.vehicle.fanOn,
+				canListener.vehicle.fuelPumpOn);
+			break;
 		} 
 		
 

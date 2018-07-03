@@ -18,4 +18,4 @@ inline float CANKelvinToFloat(uint16_t kelvinValue) {
 }
 
 const int PAYLOAD_SIZE = 119;
-const int NUMBER_OF_MESSAGES = 2;
+const int NUMBER_OF_MESSAGES = 3;
