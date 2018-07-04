@@ -218,7 +218,7 @@ void loop() {
 		switch (i) {
 		case 0 :
 			sprintf(payload,
-				"{\"time\": %d, \"rpm\": %d, \"volt\": %0.2f, \"waterTemp\": %0.2f, \"speed\": %0.2f}!",
+				"{\"time\": %ld, \"rpm\": %d, \"volt\": %0.2f, \"waterTemp\": %0.2f, \"speed\": %d}!",
 				time,
 				canListener.vehicle.rpm,
 				canListener.vehicle.voltage,
@@ -227,7 +227,7 @@ void loop() {
 			break;
 		case 1 :
 			sprintf(payload,
-				"{\"time\": %d, \"oilTemp\": %d, \"gear\": %0.2f, \"airTemp\": %0.2f, \"map\": %0.2f}!",
+				"{\"time\": %ld, \"oilTemp\": %0.2f, \"gear\": %d, \"airTemp\": %0.2f, \"map\": %d}!",
 				time,
 				canListener.vehicle.oilTemp,
 				canListener.vehicle.gear,
@@ -236,7 +236,7 @@ void loop() {
 			break;
 		case 2 :
 			sprintf(payload,
-				"{\"time\": %d, \"ecuTemp\": %d, \"fuelPressure\": %0.2f, \"fanOn\": %0.2f, \"fuelPumpOn\": %0.2f}!",
+				"{\"time\": %ld, \"ecuTemp\": %0.2f, \"fuelPressure\": %d, \"fanOn\": %d, \"fuelPumpOn\": %d}!",
 				time,
 				canListener.vehicle.ecuTemp,
 				canListener.vehicle.fuelPressure,
