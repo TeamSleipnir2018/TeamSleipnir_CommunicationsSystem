@@ -1,3 +1,16 @@
+'''
+Team Sleipnir telemetry serial reader
+
+Hardware:
+	- Teensy 3.2
+	- Adafruit RA8875 touch LCD controller
+	- 800 x 480 LCD
+	- NPIC6C4894 shift registers
+	- MCP2551 CAN transceiver
+
+Written by Einar Arnason
+'''
+
 import time
 import os
 import sys
@@ -33,11 +46,12 @@ def main():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS vehicledata
     (
-        time TIMESTAMP,
+        time TIMESTAMP PRIMARY KEY,
         rpm INTEGER,
         speed INTEGER,
         oilTemp REAL,
         waterTemp REAL,
+        ecuTemp REAL,
         volt INTEGER,
         map INTEGER,
         gear INTEGER,
@@ -45,6 +59,10 @@ def main():
         fuelPressure INTEGER,
         fanOn BOOLEAN,
         fuelPumpOn BOOLEAN
+        latitude REAL,
+        longitude REAL,
+        gpsSpeed REAL,
+        gpsFixQuality INTEGER
     );
     ''')
     conn.commit()
@@ -65,13 +83,24 @@ def main():
                 data = json.loads(re.split(r"(?=\{)(.*?)(?<=\})", str(message.data))[1])
                 print(data)
 
-                cursor.execute('''
-                BEGIN 
+                MessageTime = data['time']
 
-                INSERT INTO vehicledata (time, rpm, speed, oiltemp, watertemp, volt)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                ''', (time.ctime(), data['rpm'], data['speed'], data['oilTemp'], data['waterTemp'], data['volt']))
-                conn.commit()
+                cursor.execute("SELECT time FROM vehicledata WHERE time = %s", (MessageTime))
+
+                if cursor.fetchone() is None :
+                    cursor.execute('''
+                    INSERT INTO vehicledata (time)
+                    VALUES (%s)
+                    ''', MessageTime)
+
+                for key, value in data :
+                    if key is not 'time' :
+                        cursor.execute('''
+                        INSERT INTO vehicledata (%s)
+                        VALUES (%s)
+                        WHERE time = %s
+                        ''', key, value, MessageTime)
+                        conn.commit()
 
         except TimeoutException as e:
             print(e)

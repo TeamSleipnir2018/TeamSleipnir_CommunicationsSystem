@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="__vm\.LCD.vsarduino.h" />
     <ClInclude Include="..\ClassLibrary\CanListener.h" />
     <ClInclude Include="..\ClassLibrary\Vehicle.h" />
     <ClInclude Include="images\batteryIcon.h">
@@ -32,6 +31,7 @@
     <ClInclude Include="images\waterTempIcon.h">
       <Filter>images</Filter>
     </ClInclude>
+    <ClInclude Include="__vm\.LCD.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LCD.ino" />

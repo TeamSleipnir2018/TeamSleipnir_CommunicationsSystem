@@ -29,7 +29,7 @@ Adafruit_GPS GPS(&Serial3);
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences. 
-#define GPSECHO  true
+const bool GPSECHO = true;
 
 // this keeps track of whether we're using the interrupt
 // off by default!
@@ -86,14 +86,13 @@ void setup() {
     outFile = sd.open(filename, FILE_WRITE);
     if (!outFile) {
         Serial.println("Error: failed to open file");
-        return;
     };
 
     // Initialize the CAN bus
 	mask.flags.extended = 0;
 	mask.flags.remote = 0;
 	mask.id = 0;
-	Can0.begin(500000, mask, 29, 30);
+	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
 	Can0.attachObj(&canListener);
 	canListener.attachGeneralHandler();
 
@@ -236,12 +235,21 @@ void loop() {
 			break;
 		case 2 :
 			sprintf(payload,
-				"{\"time\": %ld, \"ecuTemp\": %0.2f, \"fuelPressure\": %d, \"fanOn\": %d, \"fuelPumpOn\": %d}!",
+				"{\"time\": %ld, \"ecuTemp\": %0.2f, \"fuelPressure\": %d, \"fanOn\": %s, \"fuelPumpOn\": %s}!",
 				time,
 				canListener.vehicle.ecuTemp,
 				canListener.vehicle.fuelPressure,
-				canListener.vehicle.fanOn,
-				canListener.vehicle.fuelPumpOn);
+				canListener.vehicle.fanOn ? "true" : "false",
+				canListener.vehicle.fuelPumpOn ? "true" : "false");
+			break;
+		case 3 :
+			sprintf(payload,
+				"{\"time\": %ld, \"latitude\": %f, \"longitude\": %f, \"gpsSpeed\": %f, \"gpsFixQuality\": %d}!",
+				time,
+				GPS.latitude,
+				GPS.longitude,
+				GPS.speed,
+				GPS.fixquality);
 			break;
 		} 
 		
@@ -276,6 +284,11 @@ void loop() {
 		else {
 			// local XBee did not provide a timely TX Status Response -- should not happen
 			Serial.println("local XBee did not provide a timely TX Status Response");
+		}
+
+		if (outFile) {
+			outFile.write(payload);
+			outFile.flush();
 		}
 	}
 }

@@ -5,6 +5,9 @@
 	Pin assignment
 */
 
+const uint8_t CAN0TX_ALT = 29;
+const uint8_t CAN0RX_ALT = 30;
+
 // Translate float values from CAN BUS
 inline float CANIntToFloat(uint16_t floatValue) {
 	return floatValue / 1000.0;
@@ -18,4 +21,4 @@ inline float CANKelvinToFloat(uint16_t kelvinValue) {
 }
 
 const int PAYLOAD_SIZE = 119;
-const int NUMBER_OF_MESSAGES = 3;
+const int NUMBER_OF_MESSAGES = 4;
