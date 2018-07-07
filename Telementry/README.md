@@ -6,6 +6,8 @@ Telementry software to receive data from a vehicle
     * [https://www.python.org/](https://www.python.org/)
 * Grafana
     * [https://grafana.com/](https://grafana.com/)
+* Grafana Track Map plugin
+	* [https://github.com/beaver71/grafana-track-map](https://github.com/beaver71/grafana-track-map)
 * PostgreSQL
     * [https://www.postgresql.org/](https://www.postgresql.org/)
 
