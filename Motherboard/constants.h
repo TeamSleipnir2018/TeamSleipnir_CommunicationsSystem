@@ -5,8 +5,8 @@
 	Pin assignment
 */
 
-const uint8_t CAN0TX_ALT = 29;
-const uint8_t CAN0RX_ALT = 30;
+const uint8_t CAN0TX_ALT = 1;
+const uint8_t CAN0RX_ALT = 1;
 
 // Translate float values from CAN BUS
 inline float CANIntToFloat(uint16_t floatValue) {

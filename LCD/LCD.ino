@@ -595,5 +595,5 @@ void setup() {
 
 void loop() {
 
-	//demo();
+	demo();
 }

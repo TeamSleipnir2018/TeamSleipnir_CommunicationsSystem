@@ -58,7 +58,7 @@ def main():
         airTemp REAL,
         fuelPressure INTEGER,
         fanOn BOOLEAN,
-        fuelPumpOn BOOLEAN
+        fuelPumpOn BOOLEAN,
         latitude REAL,
         longitude REAL,
         gpsSpeed REAL,
