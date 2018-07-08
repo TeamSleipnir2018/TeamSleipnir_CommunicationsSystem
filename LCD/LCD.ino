@@ -27,6 +27,9 @@ Written by Einar Arnason
 #include "constants.h"
 #include "CanListener.h"
 
+// RA8875 resource lock
+Threads::Mutex lcdLock;
+
 // LCD driver
 Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
 
@@ -162,6 +165,7 @@ void printValue(
 	const uint8_t& fontSize,
 	bool warning
 	) {
+	lcdLock.lock();
 	tft.textMode();
 	tft.textSetCursor(x, y);
 	tft.textEnlarge(fontSize);
@@ -173,6 +177,7 @@ void printValue(
 	}
 	tft.textWrite(charValue, len);
 	tft.textColor(RA8875_WHITE, RA8875_BLACK);
+	lcdLock.unlock();
 }
 
 void printValues() {
@@ -189,7 +194,9 @@ void printValues() {
 				3,
 				false
 			);
+			lcdLock.lock();
 			tft.textWrite("v");
+			lcdLock.unlock();
 		}
 		if (canListener.vehicle.prevOilTemp != canListener.vehicle.oilTemp) {
 			char charValue[oilTempDispLen];
@@ -217,8 +224,10 @@ void printValues() {
 					false
 				);
 			}
+			lcdLock.lock();
 			tft.textEnlarge(2);
 			tft.textWrite(celcius);
+			lcdLock.unlock();
 		}
 		if (canListener.vehicle.prevWaterTemp != canListener.vehicle.waterTemp) {
 			char charValue[waterTempDispLen];
@@ -246,8 +255,10 @@ void printValues() {
 					false
 				);
 			}
+			lcdLock.lock();
 			tft.textEnlarge(2);
 			tft.textWrite(celcius);
+			lcdLock.unlock();
 		}
 		if (canListener.vehicle.prevEcuTemp != canListener.vehicle.ecuTemp) {
 			char charValue[ecuTempDispLen];
@@ -276,8 +287,10 @@ void printValues() {
 					false
 				);
 			}
+			lcdLock.lock();
 			tft.textEnlarge(2);
 			tft.textWrite(celcius);
+			lcdLock.unlock();
 		}
 		if (canListener.vehicle.prevFuelPressure != canListener.vehicle.fuelPressure) {
 			char charValue[fuelPressureDispLen];
@@ -291,7 +304,9 @@ void printValues() {
 				3,
 				false
 			);
+			lcdLock.lock();
 			tft.textWrite("mB");
+			lcdLock.unlock();
 		}
 		if (canListener.vehicle.prevRPM != canListener.vehicle.rpm) {
 			char charValue[rpmDispLen];
@@ -336,19 +351,24 @@ void printValues() {
 		}
 		if (canListener.vehicle.prevGear != canListener.vehicle.gear) {
 			if (canListener.vehicle.gear == 0) {
+				lcdLock.lock();
 				tft.drawChar(gearPos[xPos], gearPos[yPos], 'N', 0xffff, 0x0000, gearSize);
+				lcdLock.unlock();
 				canListener.vehicle.prevGear = canListener.vehicle.gear;
 			}
 			else {
 				char gearDisp = 48 + canListener.vehicle.gear;
 				canListener.vehicle.prevGear = canListener.vehicle.gear;
+				lcdLock.lock();
 				tft.drawChar(gearPos[xPos], gearPos[yPos], gearDisp, 0xffff, 0x0000, gearSize);
+				lcdLock.unlock();
 			}
 		}
 	}
 }
 
 void drawFanIcon() {
+	lcdLock.lock();
 	tft.drawXBitmap(
 		fanIconPos[xPos],
 		fanIconPos[yPos],
@@ -357,10 +377,12 @@ void drawFanIcon() {
 		fanHeight,
 		RA8875_WHITE
 	);
+	lcdLock.unlock();
 }
 
 void drawFanState() {
 	if (canListener.vehicle.prevFanOn != canListener.vehicle.fanOn) {
+		lcdLock.lock();
 		tft.graphicsMode();
 		if (canListener.vehicle.fanOn) {
 			tft.fillRect(disabledIconPos[xPos], disabledIconPos[yPos], 100, 100, RA8875_BLACK);
@@ -378,6 +400,7 @@ void drawFanState() {
 		}
 		canListener.vehicle.prevFanOn = canListener.vehicle.fanOn;
 		tft.textMode();
+		lcdLock.unlock();
 	}
 }
 
@@ -420,7 +443,9 @@ void drawSpeedBar(const uint8_t& value, const uint16_t& color) {
 	int v0 = (speedoOffsetRadius * cos(speedToDeg * (PI / 180))) + cY;
 	int u1 = ((speedoBarRadius + speedoOffsetRadius) * sin(speedToDeg * (PI / 180))) + cX;
 	int v1 = ((speedoBarRadius + speedoOffsetRadius) * cos(speedToDeg * (PI / 180))) + cY;
+	lcdLock.lock();
 	tft.drawLine(u0, v0, u1, v1, color);
+	lcdLock.unlock();
 }
 
 void runShiftRegister() {
@@ -594,6 +619,5 @@ void setup() {
 }
 
 void loop() {
-
 	demo();
 }
