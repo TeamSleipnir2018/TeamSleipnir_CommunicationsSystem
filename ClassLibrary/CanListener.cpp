@@ -28,7 +28,7 @@ bool CanListener::frameHandler(CAN_message_t &frame, int mailbox, uint8_t contro
 		break;
 	case 3:
 		vehicle.ecuTemp = CANKelvinToFloat(frame.buf[0] | (frame.buf[1] << 8));
-		vehicle.fuelPressure = frame.buf[2] | (frame.buf[3] << 8);
+		vehicle.fuelPressure = (frame.buf[2] | (frame.buf[3] << 8)) / 1000.0;
 		vehicle.fanOn = frame.buf[5];
 		vehicle.fuelPumpOn = frame.buf[7];
 		break;

@@ -22,8 +22,8 @@ Vehicle::Vehicle() {
 	prevFuelPumpOn = true;
 	voltage = 0.0;
 	prevVoltage = 1.0;
-	fuelPressure = 0;
-	prevFuelPressure = 1;
+	fuelPressure = 0.0;
+	prevFuelPressure = 1.0;
 	map = 0;
 	prevMap = 1;
 }

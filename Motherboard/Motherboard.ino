@@ -235,7 +235,7 @@ void loop() {
 			break;
 		case 2 :
 			sprintf(payload,
-				"{\"time\": %ld, \"ecuTemp\": %0.2f, \"fuelPressure\": %d, \"fanOn\": %s, \"fuelPumpOn\": %s}!",
+				"{\"time\": %ld, \"ecuTemp\": %0.2f, \"fuelPressure\": %0.2f, \"fanOn\": %s, \"fuelPumpOn\": %s}!",
 				time,
 				canListener.vehicle.ecuTemp,
 				canListener.vehicle.fuelPressure,
@@ -244,12 +244,11 @@ void loop() {
 			break;
 		case 3 :
 			sprintf(payload,
-				"{\"time\": %ld, \"latitude\": %f, \"longitude\": %f, \"gpsSpeed\": %f, \"gpsFixQuality\": %d}!",
+				"{\"time\": %ld, \"latitude\": %f, \"longitude\": %f, \"gpsSpeed\": %f}!",
 				time,
 				GPS.latitude,
 				GPS.longitude,
-				GPS.speed,
-				GPS.fixquality);
+				GPS.speed);
 			break;
 		} 
 		

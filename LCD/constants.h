@@ -13,6 +13,10 @@ const uint8_t SR_DATA_OUT = 18;
 const uint8_t SR_LATCH = 19;
 const uint8_t SR_OUTPUT_ENABLE = 16;
 
+// Buttons
+const uint8_t BUTTON1 = 20;
+const uint8_t BUTTON2 = 21;
+
 // LCD positioning
 const uint16_t lcdWidth = 800;
 const uint16_t lcdHeight = 480;
@@ -62,7 +66,7 @@ const uint8_t WARNING_LIGHT7 = 2;
 const uint8_t WARNING_LIGHT8 = 1;
 const uint8_t SR_LEDBITS = 40;
 const uint8_t SR_WARNINGBITS = 8;
-const uint16_t RPM_SCALE = 270;
+const uint16_t RPM_SCALE = 263;
 const uint8_t TOTAL_LEDS = 48;
 
 const uint16_t MAX_RPM = 14000;

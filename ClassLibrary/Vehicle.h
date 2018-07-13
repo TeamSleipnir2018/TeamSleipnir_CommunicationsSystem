@@ -34,8 +34,8 @@ public:
 	bool fuelPumpOn;
 	bool prevFuelPumpOn;
 
-	uint16_t fuelPressure;
-	uint16_t prevFuelPressure;
+	float fuelPressure;
+	float prevFuelPressure;
 
 	uint16_t map;
 	uint16_t prevMap;

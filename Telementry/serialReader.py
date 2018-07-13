@@ -78,28 +78,30 @@ def main():
             time.sleep(1)
             message = xbee.read_data()
 
-            if message is not None :
-
-                data = json.loads(re.split(r"(?=\{)(.*?)(?<=\})", str(message.data))[1])
+            if message and message.data is not None :
+                try:
+                    data = json.loads(re.split(r"(?=\{)(.*?)(?<=\})", str(message.data))[1])
+                except Exception as e:
+                    print(e)
                 print(data)
 
                 MessageTime = data['time']
 
-                cursor.execute("SELECT time FROM vehicledata WHERE time = %s", (MessageTime))
+                cursor.execute("SELECT time FROM vehicledata WHERE time = TO_TIMESTAMP({})".format(MessageTime))
 
                 if cursor.fetchone() is None :
                     cursor.execute('''
                     INSERT INTO vehicledata (time)
-                    VALUES (%s)
-                    ''', MessageTime)
+                    VALUES (TO_TIMESTAMP({}))
+                    '''.format(MessageTime))
 
-                for key, value in data :
-                    if key is not 'time' :
+                for key, value in data.items() :
+                    if key != "time" :
                         cursor.execute('''
-                        INSERT INTO vehicledata (%s)
-                        VALUES (%s)
-                        WHERE time = %s
-                        ''', key, value, MessageTime)
+                        UPDATE vehicledata 
+                        SET {} = {}
+                        WHERE time = TO_TIMESTAMP({})
+                        '''.format(key, value, MessageTime))
                         conn.commit()
 
         except TimeoutException as e:
