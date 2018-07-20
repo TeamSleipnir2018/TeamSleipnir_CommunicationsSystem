@@ -26,6 +26,12 @@ Vehicle::Vehicle() {
 	prevFuelPressure = 1.0;
 	map = 0;
 	prevMap = 1;
+	cylcontrib1 = 0;
+	prevCylcontrib1 = 1;
+	cylcontrib2 = 0;
+	prevCylcontrib2 = 1;
+	cylcontrib3 = 0;
+	prevCylcontrib4 = 1;
 }
 
 

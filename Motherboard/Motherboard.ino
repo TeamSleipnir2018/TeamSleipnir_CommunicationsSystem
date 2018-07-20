@@ -16,7 +16,7 @@ Written by Einar Arnason
 #include <FlexCAN.h>
 #include <SdFat.h>
 #include <TimeLib.h>
-#include <Adafruit_GPS.h>
+//#include <Adafruit_GPS.h>
 #include "constants.h"
 #include "CanListener.h"
 
@@ -25,7 +25,7 @@ CanListener canListener;
 CAN_filter_t mask;
 
 // GPS object
-Adafruit_GPS GPS(&Serial3);
+//Adafruit_GPS GPS(&Serial3);
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences. 
@@ -102,6 +102,7 @@ void setup() {
 	Serial2.begin(9600);
 	xbee.setSerial(Serial2);
 
+	/*
 	// 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
 	GPS.begin(9600);
 	Serial3.begin(9600);
@@ -125,6 +126,7 @@ void setup() {
 #else
 	useInterrupt(true);
 #endif
+*/
 }
 
 #ifdef __AVR__
@@ -158,7 +160,7 @@ void useInterrupt(boolean v) {
 uint32_t timer = millis();
 
 void loop() {
-
+	/*
 	// in case you are not using the interrupt above, you'll
 	// need to 'hand query' the GPS, not suggested :(
 	if (! usingInterrupt) {
@@ -210,8 +212,8 @@ void loop() {
 			Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 		}
 	}
-
-	long time = now();
+	*/
+	long time = getTeensy3Time();
 
 	for (int i = 0; i < NUMBER_OF_MESSAGES; i++) {
 		switch (i) {
@@ -244,11 +246,12 @@ void loop() {
 			break;
 		case 3 :
 			sprintf(payload,
-				"{\"time\": %ld, \"latitude\": %f, \"longitude\": %f, \"gpsSpeed\": %f}!",
+				"{\"time\": %ld, \"cylcontrib1\": %d, \"cylcontrib2\": %d, \"cylcontrib3\": %d, \"cylcontrib4\": %d}!",
 				time,
-				GPS.latitude,
-				GPS.longitude,
-				GPS.speed);
+				canListener.vehicle.cylcontrib1,
+				canListener.vehicle.cylcontrib2,
+				canListener.vehicle.cylcontrib3,
+				canListener.vehicle.cylcontrib4);
 			break;
 		} 
 		

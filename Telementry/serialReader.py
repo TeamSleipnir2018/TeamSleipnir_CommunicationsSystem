@@ -52,17 +52,21 @@ def main():
         oilTemp REAL,
         waterTemp REAL,
         ecuTemp REAL,
-        volt INTEGER,
+        volt REAL,
         map INTEGER,
         gear INTEGER,
         airTemp REAL,
-        fuelPressure INTEGER,
+        fuelPressure REAL,
         fanOn BOOLEAN,
         fuelPumpOn BOOLEAN,
         latitude REAL,
         longitude REAL,
         gpsSpeed REAL,
-        gpsFixQuality INTEGER
+        gpsFixQuality INTEGER,
+        cylcontrib1 INTEGER,
+        cylcontrib2 INTEGER,
+        cylcontrib3 INTEGER,
+        cylcontrib4 INTEGER
     );
     ''')
     conn.commit()
@@ -75,7 +79,6 @@ def main():
         try:
             if not xbee.is_open() :
                 xbee.open()
-            time.sleep(1)
             message = xbee.read_data()
 
             if message and message.data is not None :
@@ -87,12 +90,13 @@ def main():
 
                 MessageTime = data['time']
 
-                cursor.execute("SELECT time FROM vehicledata WHERE time = TO_TIMESTAMP({})".format(MessageTime))
+                cursor.execute("SELECT time FROM vehicledata WHERE time = to_timestamp({})".format(MessageTime))
+                conn.commit()
 
                 if cursor.fetchone() is None :
                     cursor.execute('''
                     INSERT INTO vehicledata (time)
-                    VALUES (TO_TIMESTAMP({}))
+                    VALUES (to_timestamp({}))
                     '''.format(MessageTime))
 
                 for key, value in data.items() :
@@ -100,7 +104,7 @@ def main():
                         cursor.execute('''
                         UPDATE vehicledata 
                         SET {} = {}
-                        WHERE time = TO_TIMESTAMP({})
+                        WHERE time = to_timestamp({})
                         '''.format(key, value, MessageTime))
                         conn.commit()
 

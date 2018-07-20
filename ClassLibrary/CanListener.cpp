@@ -32,6 +32,12 @@ bool CanListener::frameHandler(CAN_message_t &frame, int mailbox, uint8_t contro
 		vehicle.fanOn = frame.buf[5];
 		vehicle.fuelPumpOn = frame.buf[7];
 		break;
+	case 5:
+		vehicle.cylcontrib1 = frame.buf[0] | (frame.buf[1] << 8);
+		vehicle.cylcontrib2 = frame.buf[2] | (frame.buf[3] << 8);
+		vehicle.cylcontrib3 = frame.buf[4] | (frame.buf[5] << 8);
+		vehicle.cylcontrib4 = frame.buf[6] | (frame.buf[7] << 8);
+		break;
 	}
 
 	return true;

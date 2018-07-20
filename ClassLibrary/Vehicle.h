@@ -40,6 +40,15 @@ public:
 	uint16_t map;
 	uint16_t prevMap;
 
+	int cylcontrib1;
+	int prevCylcontrib1;
+	int cylcontrib2;
+	int prevCylcontrib2;
+	int cylcontrib3;
+	int prevCylcontrib3;
+	int cylcontrib4;
+	int prevCylcontrib4;
+
 	Vehicle();
 	virtual ~Vehicle();
 };

@@ -19,6 +19,9 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="sdCardReader.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="serialReader.py" />
   </ItemGroup>
   <ItemGroup>
