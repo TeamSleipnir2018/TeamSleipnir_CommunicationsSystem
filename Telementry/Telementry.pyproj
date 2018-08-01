@@ -19,6 +19,12 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="insertHeadersFromECU.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="insertValuesFromECU.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="sdCardReader.py">
       <SubType>Code</SubType>
     </Compile>

@@ -7,7 +7,6 @@ Written by Einar Arnason
 import time
 import os
 import sys
-import signal
 import re
 import json
 import psycopg2

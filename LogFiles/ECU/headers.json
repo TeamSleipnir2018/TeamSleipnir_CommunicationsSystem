@@ -1,0 +1,1160 @@
+[
+  {
+    "name": "airtemp",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "airtempmult",
+    "type": "real"
+  },
+  {
+    "name": "alsblockers", 
+    "type":  "integer"
+  },
+  {
+    "name": "alspwmvalve",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "analog0",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog1",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog10",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog11",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog12",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog13",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog14",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog15",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog2",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog3",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog4",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog5",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog6",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog7",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog8",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "analog9",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "app",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "appsec",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "atcmdgear",
+    "type": "integer"
+  },
+  {
+    "name": "barometer",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "boostD",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "boostI",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "boostP",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "boostctlcmd",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "boostduty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "boosterror",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "boostgptrim1",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "boostgptrim2",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "boostgptrim3",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "boosttarget",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "calpot",
+    "type": "integer"
+  },
+  {
+    "name": "camangle",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "camangle2",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "camevent",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "camrepeat",
+    "type": "integer"
+  },
+  {
+    "name": "camtooth",
+    "type": "integer"
+  },
+  {
+    "name": "canerrcount1",
+    "type": "integer"
+  },
+  {
+    "name": "canrx1",
+    "type": "integer"
+  },
+  {
+    "name": "canrxerr",
+    "type": "integer"
+  },
+  {
+    "name": "canscan_running",
+    "type": "integer"
+  },
+  {
+    "name": "canscanaddr",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc0",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc1",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc10",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc11",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc12",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc13",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc14",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc15",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc2",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc3",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc4",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc5",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc6",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc7",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc8",
+    "type": "integer"
+  },
+  {
+    "name": "cansrc9",
+    "type": "integer"
+  },
+  {
+    "name": "cel",
+    "type": "integer"
+  },
+  {
+    "name": "coolanttemp",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "coolingfan_primary",
+    "type": "integer"
+  },
+  {
+    "name": "crankevent",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "cylairmass",
+    "unit": "g",
+    "type": "real"
+  },
+  {
+    "name": "cylcontrib1",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib2",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib3",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib4",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib5",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib6",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib7",
+    "type": "integer"
+  },
+  {
+    "name": "cylcontrib8",
+    "type": "integer"
+  },
+  {
+    "name": "date",
+    "textchannel": true,
+    "type": "timestamp"
+  },
+  {
+    "name": "deltamap",
+    "unit": "mbar/sec",
+    "type": "integer"
+  },
+  {
+    "name": "deltarpm",
+    "unit": "RPM/sec",
+    "type": "integer"
+  },
+  {
+    "name": "deltathrottle",
+    "unit": "%/sec",
+    "type": "integer"
+  },
+  {
+    "name": "din1freq",
+    "unit": "Hz",
+    "type": "integer"
+  },
+  {
+    "name": "din1interval",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "din3freq",
+    "unit": "Hz",
+    "type": "integer"
+  },
+  {
+    "name": "din3interval",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "din4freq",
+    "unit": "Hz",
+    "type": "integer"
+  },
+  {
+    "name": "din4interval",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "dwell",
+    "unit": "ms",
+    "type": "integer"
+  },
+  {
+    "name": "ecutemp",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "egt1",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "egt2",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "egt3",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "egt4",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "emap",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "engine_running",
+    "type": "integer"
+  },
+  {
+    "name": "enginespeed",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "error0",
+    "type": "integer"
+  },
+  {
+    "name": "error1",
+    "type": "integer"
+  },
+  {
+    "name": "error2",
+    "type": "integer"
+  },
+  {
+    "name": "error3",
+    "type": "integer"
+  },
+  {
+    "name": "etcD",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "etcI",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "etcP",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "etcduty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "etcposerr",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "etctarget",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "flags0",
+    "type": "integer"
+  },
+  {
+    "name": "flags1",
+    "type": "integer"
+  },
+  {
+    "name": "flags2",
+    "type": "integer"
+  },
+  {
+    "name": "flexfreq",
+    "unit": "Hz",
+    "type": "real"
+  },
+  {
+    "name": "flexpw",
+    "unit": "ms",
+    "type": "real"
+  },
+  {
+    "name": "fp_abs",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "fp_rel_baro",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "fp_rel_map",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "fuel_alsmod",
+    "type": "real"
+  },
+  {
+    "name": "fuel_gpmod1",
+    "type": "real"
+  },
+  {
+    "name": "fuel_gpmod2",
+    "type": "real"
+  },
+  {
+    "name": "fuel_launchmod",
+    "type": "real"
+  },
+  {
+    "name": "fuel_n2oadder",
+    "unit": "mg/c",
+    "type": "real"
+  },
+  {
+    "name": "fuelcutlimit",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "fuelflow",
+    "unit": "cc/min",
+    "type": "integer"
+  },
+  {
+    "name": "fuelmass",
+    "unit": "mg/c",
+    "type": "real"
+  },
+  {
+    "name": "fuelpump",
+    "type": "integer"
+  },
+  {
+    "name": "fuelsecmult",
+    "type": "real"
+  },
+  {
+    "name": "fuelsplit",
+    "unit": "%",
+    "type": "integer"
+  },
+  {
+    "name": "gear",
+    "type": "integer"
+  },
+  {
+    "name": "gearselect",
+    "enumchannel": true,
+    "enumtranslation": {
+      "P": 0,
+      "N": 1,
+      "R": 2,
+      "1": 3,
+      "2": 4,
+      "3": 5,
+      "4": 6
+    },
+    "type": "integer"
+  },
+  {
+    "name": "gpin",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic1",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic2",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic3",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic4",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic5",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic6",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic7",
+    "type": "integer"
+  },
+  {
+    "name": "gplogic8",
+    "type": "integer"
+  },
+  {
+    "name": "idleD",
+    "type": "integer"
+  },
+  {
+    "name": "idleI",
+    "type": "integer"
+  },
+  {
+    "name": "idleP",
+    "type": "integer"
+  },
+  {
+    "name": "idletargetspeed",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "idlevalve",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "idlevalvepw",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "idlevalvestep",
+    "unit": "steps",
+    "type": "integer"
+  },
+  {
+    "name": "ign_airtempretard",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "ign_alsmod",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "ign_gpmod1",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "ign_gpmod2",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "ign_idleadvance",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "ign_n2oretard",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "injangle1",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "injangle2",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "injangle3",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "injangle4",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "injdc1",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "injdc2",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "injdc3",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "injdc4",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "injpw1",
+    "unit": "ms",
+    "type": "real"
+  },
+  {
+    "name": "injpw2",
+    "unit": "ms",
+    "type": "real"
+  },
+  {
+    "name": "injpw3",
+    "unit": "ms",
+    "type": "real"
+  },
+  {
+    "name": "injpw4",
+    "unit": "ms",
+    "type": "real"
+  },
+  {
+    "name": "lambda",
+    "type": "real"
+  },
+  {
+    "name": "lambda2",
+    "type": "real"
+  },
+  {
+    "name": "lambdatgt",
+    "type": "real"
+  },
+  {
+    "name": "lclimit",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "lcretard",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "logging",
+    "type": "integer"
+  },
+  {
+    "name": "logrecs",
+    "type": "integer"
+  },
+  {
+    "name": "logseq",
+    "type": "integer"
+  },
+  {
+    "name": "logstatus",
+    "type": "integer"
+  },
+  {
+    "name": "ltft",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "ltft_learning",
+    "type": "integer"
+  },
+  {
+    "name": "maf",
+    "unit": "g/s",
+    "type": "real"
+  },
+  {
+    "name": "mainfrequency",
+    "unit": "Hz",
+    "type": "integer"
+  },
+  {
+    "name": "map",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "mempage",
+    "type": "integer"
+  },
+  {
+    "name": "n2ofuelpwm",
+    "unit": "%",
+    "digits": 1,
+    "type": "real"
+  },
+  {
+    "name": "n2opwm",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "n2os2fuelpwm",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "n2os2pwm",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "n2os2time",
+    "unit": "s",
+    "type": "real"
+  },
+  {
+    "name": "n2ostage1",
+    "type": "integer"
+  },
+  {
+    "name": "n2ostage2",
+    "type": "integer"
+  },
+  {
+    "name": "n2otime",
+    "unit": "s",
+    "type": "real"
+  },
+  {
+    "name": "nvvalid",
+    "type": "integer"
+  },
+  {
+    "name": "oilpress",
+    "unit": "mbar",
+    "type": "integer"
+  },
+  {
+    "name": "oiltemp",
+    "unit": "°C",
+    "type": "real"
+  },
+  {
+    "name": "outputs",
+    "type": "integer"
+  },
+  {
+    "name": "pwm0duty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm1D",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm1I",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm1P",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm1duty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm1sp",
+    "unit": "V",
+    "type": "integer"
+  },
+  {
+    "name": "pwm2D",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm2I",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm2P",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm2duty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "pwm2sp",
+    "unit": "V",
+    "type": "integer"
+  },
+  {
+    "name": "ratio_map_baro",
+    "type": "real"
+  },
+  {
+    "name": "ratio_map_emap",
+    "type": "real"
+  },
+  {
+    "name": "rawcamangle",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "rawcamangle2",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "rawenginespeed",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "revlimit_fuel",
+    "type": "integer"
+  },
+  {
+    "name": "revlimit_spark",
+    "type": "integer"
+  },
+  {
+    "name": "roaddistance",
+    "unit": "km",
+    "type": "real"
+  },
+  {
+    "name": "roadspeed",
+    "unit": "km/h",
+    "type": "real"
+  },
+  {
+    "name": "roadspeed2",
+    "unit": "km/h",
+    "type": "real"
+  },
+  {
+    "name": "rollingtime",
+    "unit": "s",
+    "type": "real"
+  },
+  {
+    "name": "runtime",
+    "unit": "s",
+    "type": "integer"
+  },
+  {
+    "name": "sclimit",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "scretard",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "slipspeed",
+    "unit": "km/h",
+    "type": "integer"
+  },
+  {
+    "name": "sparkangle1",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle2",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle3",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle4",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle5",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle6",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle7",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkangle8",
+    "unit": "°BTDC",
+    "type": "real"
+  },
+  {
+    "name": "sparkcutlimit",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "supplyvoltage",
+    "unit": "V",
+    "type": "real"
+  },
+  {
+    "name": "synclosscount",
+    "type": "integer"
+  },
+  {
+    "name": "synclossreason",
+    "type": "integer"
+  },
+  {
+    "name": "syncrepeat",
+    "type": "integer"
+  },
+  {
+    "name": "syncstate",
+    "type": "integer"
+  },
+  {
+    "name": "synctooth",
+    "type": "integer"
+  },
+  {
+    "name": "tcretard",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "throttle",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "throttlesec",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "time",
+    "unit": "s",
+    "type": "real"
+  },
+  {
+    "name": "time_since_launch",
+    "unit": "ms",
+    "type": "integer"
+  },
+  {
+    "name": "trailingangle",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "trailingdwell",
+    "unit": "ms",
+    "type": "real"
+  },
+  {
+    "name": "transientfuel",
+    "unit": "mg/c",
+    "type": "real"
+  },
+  {
+    "name": "turbospeed",
+    "unit": "RPM",
+    "type": "integer"
+  },
+  {
+    "name": "vssinterval",
+    "unit": "µs",
+    "type": "integer"
+  },
+  {
+    "name": "vvt2D",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvt2I",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvt2P",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvt2duty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvtD",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvtI",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvtP",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvtduty",
+    "unit": "%",
+    "type": "real"
+  },
+  {
+    "name": "vvtextarget",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "vvtintarget",
+    "unit": "°",
+    "type": "real"
+  },
+  {
+    "name": "warmupmult",
+    "type": "real"
+  }
+]

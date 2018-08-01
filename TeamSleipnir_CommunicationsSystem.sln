@@ -9,14 +9,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LCD", "LCD\LCD.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CANsimulator", "CANsimulator\CANsimulator.vcxproj", "{39013BEF-1D33-40B7-BD7F-C322C3E7B29A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{08F6CC50-6485-495F-AB59-14337541002A}"
-	ProjectSection(SolutionItems) = preProject
-		ClassLibrary\CanListener.cpp = ClassLibrary\CanListener.cpp
-		ClassLibrary\CanListener.h = ClassLibrary\CanListener.h
-		ClassLibrary\Vehicle.cpp = ClassLibrary\Vehicle.cpp
-		ClassLibrary\Vehicle.h = ClassLibrary\Vehicle.h
-	EndProjectSection
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Telementry", "Telementry\Telementry.pyproj", "{3D9D586C-A37C-4C48-852F-97B48F9E599D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{AC1AE64C-6700-4397-BCF6-7040D9F7159A}"
@@ -25,6 +17,58 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{AC1AE6
 		ConfigFiles\lpc4-ECUconfig.cud = ConfigFiles\lpc4-ECUconfig.cud
 		ConfigFiles\XBee-PC.xpro = ConfigFiles\XBee-PC.xpro
 		ConfigFiles\XBee-Vehicle.xpro = ConfigFiles\XBee-Vehicle.xpro
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogFiles", "LogFiles", "{11EA7DA9-6E7D-4F71-8F18-F2D609249689}"
+	ProjectSection(SolutionItems) = preProject
+		LogFiles\Motherboard\2018_7_12_21_16_39.json = LogFiles\Motherboard\2018_7_12_21_16_39.json
+		LogFiles\Motherboard\2018_7_12_21_16_43.json = LogFiles\Motherboard\2018_7_12_21_16_43.json
+		LogFiles\Motherboard\2018_7_12_21_16_44.json = LogFiles\Motherboard\2018_7_12_21_16_44.json
+		LogFiles\Motherboard\2018_7_12_21_16_46.json = LogFiles\Motherboard\2018_7_12_21_16_46.json
+		LogFiles\Motherboard\2018_7_12_21_21_50.json = LogFiles\Motherboard\2018_7_12_21_21_50.json
+		LogFiles\Motherboard\2018_7_13_12_11_14.json = LogFiles\Motherboard\2018_7_13_12_11_14.json
+		LogFiles\Motherboard\2018_7_13_12_11_19.json = LogFiles\Motherboard\2018_7_13_12_11_19.json
+		LogFiles\Motherboard\2018_7_13_12_26_27.json = LogFiles\Motherboard\2018_7_13_12_26_27.json
+		LogFiles\Motherboard\2018_7_13_12_28_52.json = LogFiles\Motherboard\2018_7_13_12_28_52.json
+		LogFiles\Motherboard\2018_7_13_12_30_37.json = LogFiles\Motherboard\2018_7_13_12_30_37.json
+		LogFiles\Motherboard\2018_7_13_12_30_52.json = LogFiles\Motherboard\2018_7_13_12_30_52.json
+		LogFiles\Motherboard\2018_7_13_18_40_41.json = LogFiles\Motherboard\2018_7_13_18_40_41.json
+		LogFiles\Motherboard\2018_7_13_18_40_46.json = LogFiles\Motherboard\2018_7_13_18_40_46.json
+		LogFiles\Motherboard\2018_7_14_13_43_11.json = LogFiles\Motherboard\2018_7_14_13_43_11.json
+		LogFiles\Motherboard\2018_7_14_13_43_16.json = LogFiles\Motherboard\2018_7_14_13_43_16.json
+		LogFiles\Motherboard\2018_7_14_9_23_35.json = LogFiles\Motherboard\2018_7_14_9_23_35.json
+		LogFiles\Motherboard\2018_7_14_9_23_39.json = LogFiles\Motherboard\2018_7_14_9_23_39.json
+		LogFiles\Motherboard\2018_7_14_9_23_40.json = LogFiles\Motherboard\2018_7_14_9_23_40.json
+		LogFiles\Motherboard\2018_7_15_9_25_31_wrong_time.json = LogFiles\Motherboard\2018_7_15_9_25_31_wrong_time.json
+		LogFiles\Motherboard\2018_7_15_9_25_36.json = LogFiles\Motherboard\2018_7_15_9_25_36.json
+		LogFiles\Motherboard\2018_7_8_15_32_0.json = LogFiles\Motherboard\2018_7_8_15_32_0.json
+		LogFiles\Motherboard\2018_7_8_15_32_2.json = LogFiles\Motherboard\2018_7_8_15_32_2.json
+		LogFiles\ECU\headers.json = LogFiles\ECU\headers.json
+		LogFiles\ECU\LOG00100.bglog = LogFiles\ECU\LOG00100.bglog
+		LogFiles\ECU\LOG00101.bglog = LogFiles\ECU\LOG00101.bglog
+		LogFiles\ECU\LOG00102.bglog = LogFiles\ECU\LOG00102.bglog
+		LogFiles\ECU\LOG00103.bglog = LogFiles\ECU\LOG00103.bglog
+		LogFiles\ECU\LOG00124.bglog = LogFiles\ECU\LOG00124.bglog
+		LogFiles\ECU\LOG00125.bglog = LogFiles\ECU\LOG00125.bglog
+		LogFiles\ECU\LOG00126.bglog = LogFiles\ECU\LOG00126.bglog
+		LogFiles\ECU\LOG00127.bglog = LogFiles\ECU\LOG00127.bglog
+		LogFiles\ECU\LOG00128.bglog = LogFiles\ECU\LOG00128.bglog
+		LogFiles\ECU\LOG00129.bglog = LogFiles\ECU\LOG00129.bglog
+		LogFiles\ECU\LOG00130.bglog = LogFiles\ECU\LOG00130.bglog
+		LogFiles\ECU\LOG00131.bglog = LogFiles\ECU\LOG00131.bglog
+		LogFiles\ECU\LOG00132.bglog = LogFiles\ECU\LOG00132.bglog
+		LogFiles\ECU\LOG00133.bglog = LogFiles\ECU\LOG00133.bglog
+		LogFiles\ECU\LOG00135.bglog = LogFiles\ECU\LOG00135.bglog
+		LogFiles\ECU\LOG00136.bglog = LogFiles\ECU\LOG00136.bglog
+		LogFiles\ECU\LOG00137.bglog = LogFiles\ECU\LOG00137.bglog
+		LogFiles\ECU\LOG00138.bglog = LogFiles\ECU\LOG00138.bglog
+		LogFiles\ECU\LOG00139.bglog = LogFiles\ECU\LOG00139.bglog
+		LogFiles\ECU\LOG00140.bglog = LogFiles\ECU\LOG00140.bglog
+		LogFiles\ECU\LOG00141.bglog = LogFiles\ECU\LOG00141.bglog
+		LogFiles\ECU\LOG00142.bglog = LogFiles\ECU\LOG00142.bglog
+		LogFiles\ECU\LOG00143.bglog = LogFiles\ECU\LOG00143.bglog
+		LogFiles\ECU\LOG00144.bglog = LogFiles\ECU\LOG00144.bglog
+		LogFiles\ECU\values.txt = LogFiles\ECU\values.txt
 	EndProjectSection
 EndProject
 Global
