@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 11,
   "links": [],
   "panels": [
     {
@@ -57,7 +57,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  supplyvoltage\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time\n",
+          "rawSql": "SELECT\n $__time(date),\n  supplyvoltage\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\n",
           "refId": "A"
         }
       ],
@@ -140,7 +140,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  cylcontrib1,\n  cylcontrib2,\n  cylcontrib3,\n  cylcontrib4\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time\n",
+          "rawSql": "SELECT\n $__time(date),\n  cylcontrib1,\n  cylcontrib2,\n  cylcontrib3,\n  cylcontrib4\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\n",
           "refId": "A"
         }
       ],
@@ -225,7 +225,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  gear\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time",
+          "rawSql": "SELECT\n $__time(date),\n  gear\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)",
           "refId": "A"
         }
       ],
@@ -309,7 +309,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  roadspeed\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time",
+          "rawSql": "SELECT\n $__time(date),\n  roadspeed\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)",
           "refId": "A"
         }
       ],
@@ -392,7 +392,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  fuelflow,\n  fuelmass,\n  fp_abs / 1000.0 AS fuelpressure\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time",
+          "rawSql": "SELECT\n $__time(date),\n  fuelflow,\n  fuelmass,\n  fp_abs / 1000.0 AS fuelpressure\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)",
           "refId": "A"
         }
       ],
@@ -477,7 +477,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  throttle\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time\n",
+          "rawSql": "SELECT\n $__time(date),\n  throttle\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\n",
           "refId": "A"
         }
       ],
@@ -561,7 +561,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  coolingfan_primary\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time\n",
+          "rawSql": "SELECT\n $__time(date),\n  coolingfan_primary\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\n",
           "refId": "A"
         }
       ],
@@ -645,7 +645,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  map\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time\n",
+          "rawSql": "SELECT\n $__time(date),\n  map\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\n",
           "refId": "A"
         }
       ],
@@ -728,7 +728,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  coolanttemp\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time",
+          "rawSql": "SELECT\n $__time(date),\n  coolanttemp\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)",
           "refId": "A"
         }
       ],
@@ -817,7 +817,7 @@
           "alias": "",
           "format": "time_series",
           "hide": false,
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  enginespeed\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time",
+          "rawSql": "SELECT\n $__time(date),\n  enginespeed\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)",
           "refId": "A"
         }
       ],
@@ -900,7 +900,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT\n date + duration * INTERVAL '1s' AS time,\n  airtemp\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\nORDER BY\n  time\n",
+          "rawSql": "SELECT\n $__time(date),\n  airtemp\nFROM\n  vehicledata\nWHERE\n  $__timeFilter(date)\n",
           "refId": "A"
         }
       ],
@@ -953,8 +953,8 @@
     "list": []
   },
   "time": {
-    "from": "2018-07-14T02:09:11.195Z",
-    "to": "2018-07-15T17:18:39.616Z"
+    "from": "2018-07-14T11:35:46.107Z",
+    "to": "2018-07-14T11:38:24.777Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -984,5 +984,5 @@
   "timezone": "utc",
   "title": "ECUdata",
   "uid": "EVp4OVKik",
-  "version": 13
+  "version": 1
 }

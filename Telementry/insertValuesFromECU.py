@@ -1,5 +1,5 @@
 '''
-Team Sleipnir telemetry sd card reader
+Team Sleipnir telemetry ECU reader
 
 Written by Einar Arnason
 '''
