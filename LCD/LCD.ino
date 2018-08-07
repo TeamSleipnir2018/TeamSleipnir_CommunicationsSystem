@@ -340,7 +340,7 @@ void printValues() {
 			char charValue[speedDispLen];
 			lcdMutex.lock();
 			drawSpeedometer();
-			printInt(
+			printFloatNoPoint(
 				speedPos[xPos],
 				speedPos[yPos],
 				canListener.vehicle.speed,

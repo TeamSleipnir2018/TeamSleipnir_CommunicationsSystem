@@ -13,6 +13,7 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Telementry", "Telementry\Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{AC1AE64C-6700-4397-BCF6-7040D9F7159A}"
 	ProjectSection(SolutionItems) = preProject
+		ConfigFiles\addMilliseconds.sql = ConfigFiles\addMilliseconds.sql
 		ConfigFiles\Grafana_Test-dashboard.json = ConfigFiles\Grafana_Test-dashboard.json
 		ConfigFiles\lpc4-ECUconfig.cud = ConfigFiles\lpc4-ECUconfig.cud
 		ConfigFiles\XBee-PC.xpro = ConfigFiles\XBee-PC.xpro
@@ -68,7 +69,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogFiles", "LogFiles", "{11
 		LogFiles\ECU\LOG00142.bglog = LogFiles\ECU\LOG00142.bglog
 		LogFiles\ECU\LOG00143.bglog = LogFiles\ECU\LOG00143.bglog
 		LogFiles\ECU\LOG00144.bglog = LogFiles\ECU\LOG00144.bglog
-		LogFiles\ECU\values.txt = LogFiles\ECU\values.txt
 	EndProjectSection
 EndProject
 Global

@@ -18,7 +18,7 @@ bool CanListener::frameHandler(CAN_message_t &frame, int mailbox, uint8_t contro
 		vehicle.rpm = frame.buf[0] | (frame.buf[1] << 8);
 		vehicle.voltage = CANIntToFloat(frame.buf[2] | (frame.buf[3] << 8));
 		vehicle.waterTemp = CANKelvinToFloat(frame.buf[4] | (frame.buf[5] << 8));
-		vehicle.speed = frame.buf[6] | (frame.buf[7] << 8);
+		vehicle.speed = CANIntToFloat(frame.buf[6] | (frame.buf[7] << 8));
 		break;
 	case 2:
 		vehicle.oilTemp = CANKelvinToFloat(frame.buf[0] | (frame.buf[1] << 8));
