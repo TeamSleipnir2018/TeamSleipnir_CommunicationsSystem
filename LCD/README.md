@@ -6,4 +6,4 @@ Steering wheel LCD controller
 
 [https://github.com/adafruit/Adafruit-GFX-Library](https://github.com/adafruit/Adafruit-GFX-Library)
 
-[https://github.com/collin80/FlexCAN_Library](https://github.com/collin80/FlexCAN_Library)
+[https://github.com/collin80/FlexCAN_Library](https://github.com/collin80/FlexCAN_Library) <- this exact version must be used
