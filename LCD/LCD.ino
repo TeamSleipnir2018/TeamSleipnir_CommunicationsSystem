@@ -179,6 +179,7 @@ void printValue(
 	tft.textColor(RA8875_WHITE, RA8875_BLACK);
 }
 
+// Only draw on screen if value has been updated
 void printValues() {
 	while (true) {
 		if (canListener.vehicle.voltage != canListener.vehicle.prevVoltage) {
@@ -408,6 +409,10 @@ void drawFanState() {
 	}
 }
 
+/*
+	Increasing value draws arc forward with primitive color formula.
+	Decreasing value draws arc backward with background color.
+*/
 void drawSpeedometer() {
 	if (canListener.vehicle.speed > canListener.vehicle.prevSpeed) {
 		for (int i = canListener.vehicle.prevSpeed; i < canListener.vehicle.speed; i++) {
@@ -487,7 +492,6 @@ void runShiftRegister() {
 /*
 	Code for simulation when CAN BUS is disconnected
 */
-
 uint16_t speedCount;
 bool reverse;
 bool demoOn;
@@ -576,6 +580,8 @@ void demo() {
 	}
 }
 
+
+// Watches for button press events on steering wheel
 void buttonHandler() {
 	while (true) {
 		if (digitalRead(BUTTON1)) {
@@ -592,8 +598,6 @@ void buttonHandler() {
 		}
 	}
 }
-
-
 
 void setup() {
 	// Initialize serial console
@@ -612,9 +616,12 @@ void setup() {
 	Serial.println("Found RA8875");
 
 	tft.displayOn(true);
-	tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
-	tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
-	tft.PWM1out(0); // Start faded out
+	// Enable TFT - display enable tied to GPIOX
+	tft.GPIOX(true);
+	// PWM output for backlight
+	tft.PWM1config(true, RA8875_PWM_CLK_DIV1024);
+	// Start faded out
+	tft.PWM1out(0); 
 	
 	//Draw logo and Fade in
 	tft.graphicsMode();
@@ -641,7 +648,7 @@ void setup() {
 	// Let the logo linger a bit
 	delay(1800);
 	
-	// Clear sceen
+	// Clear sceen and draw static graphics
 	tft.fillScreen(RA8875_BLACK);
 	tft.textMode();
 	tft.textColor(RA8875_WHITE, RA8875_BLACK);
@@ -652,6 +659,7 @@ void setup() {
 	reverse = false;
 	demoOn = false;
 
+	// Start threads
 	threads.addThread(runShiftRegister);
 	threads.addThread(printValues);
 	threads.addThread(drawFanState);

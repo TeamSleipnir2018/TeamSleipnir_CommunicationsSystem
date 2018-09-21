@@ -288,6 +288,7 @@ void loop() {
 			Serial.println("local XBee did not provide a timely TX Status Response");
 		}
 
+		// Write to SD card
 		if (outFile) {
 			outFile.write(payload);
 			outFile.flush();
