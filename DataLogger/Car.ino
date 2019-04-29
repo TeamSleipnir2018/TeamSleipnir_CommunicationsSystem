@@ -9,14 +9,14 @@
 
 // Message definitions
 #define ERRORLED 3
-#define REPLY_ACK 0x01
+#define REPLY_ACK 0x01 
 #define REPLY_ERROR 0x03
 #define REPLAY_INITAL 0xFE
 
 // Pit Control caller ID
-const uint8_t Pit_ID = 9;
+const uint8_t Pit_ID = 7;
 // Car Computer caller ID
-const uint8_t Car_ID = 8;
+const uint8_t Car_ID = 6;
 
 //the command I will be sending: nr.1-command type, nr.2-value and nr.3-error check.
 const int COMMAND_size = 3;
@@ -51,10 +51,7 @@ void setup()
     delay(10000);
     Serial.begin(115200);
     Serial.println("Race Car Sending Unit!");
-    Serial.println("");
     Serial.println("Setup start");
-    Serial.println("");
-    Serial.println("");
     Serial.println("Initializing...");
     Serial.println("");
 
@@ -87,7 +84,7 @@ void setup()
     Serial.println("Establishing connection to Pit....");
     Serial.println("");
 
-    if (establishConnection())
+    /*if (establishConnection())
     {
         Serial.println("Connection to the Pit established!");
         Serial.println("");
@@ -98,7 +95,8 @@ void setup()
         Serial.println("WARNING: Connection to Pit failed..");
         Serial.println("");
         Serial.println("");
-    }
+    }*/
+    
     loop();
 }
 
@@ -117,8 +115,7 @@ void sendMessage(uint8_t CMD_TYPE, uint8_t CMD_VALUE)
     Serial.println("Reply Sent!");
 
     delay(10);
-    rf95.waitPacketSent();
-    loop();
+    //rf95.waitPacketSent();
 }
 
 void recieveMessage()
@@ -128,10 +125,11 @@ void recieveMessage()
     Serial.println("Waiting for reply...");
 
     // Max wait for data is 1 sec..
-    if (rf95.waitAvailableTimeout(100))
+    if (rf95.init())//rf95.waitAvailableTimeout(100))
     {
         if (rf95.recv(buf, &len))
         {
+          Serial.println("Recv is true!");
             if (rf95.headerId() == Pit_ID)
             {
                 if (buf[2] == (buf[0] ^ buf[1]))
@@ -173,12 +171,17 @@ void recieveMessage()
         else
         {
             Serial.println("ERROR: Receive message failed");
+            Serial.println(buf[0]);
+            Serial.println(buf[1]);
+            Serial.println(buf[2]);
         }
     }
     else
     {
         Serial.println("WARNING: ACK not received");
     }
+    delay(1000);
+    loop();
 }
 
 bool establishConnection()
@@ -204,9 +207,8 @@ bool establishConnectionReply()
 void loop()
 {
     Serial.println("____________________________________________________________");
-    delay(100);
-    if (rf95.available())
-    {
-        //
-    }
+    delay(1000);
+    //recieveMessage();
+    sendMessage(72, 27);
+    loop();
 }
