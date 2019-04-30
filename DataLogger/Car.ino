@@ -5,17 +5,16 @@
 #define RFM95_CS 15
 #define RFM95_RST 25
 #define RFM95_INT 2
+#define ERRORLED 3
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);  
 
 // Message definitions
-#define ERRORLED 3
 #define REPLY_ACK 0x01
 #define REPLY_ERROR 0x03
-#define REPLAY_INITAL 0xFE
 
 //the command I will be sending: nr.1-command type, nr.2-value and nr.3-error check.
-const int COMMAND_size = 3;
+const int COMMAND_size = RH_RF95_MAX_MESSAGE_LEN;
 uint8_t COMMAND[COMMAND_size];
 uint8_t CMD_TYPE;
 uint8_t CMD_VALUE;
@@ -102,7 +101,7 @@ void recieveMessage()
 
 bool establishConnection()
 {
-    sendMessage(Car_ID, REPLAY_INITAL);
+    sendMessage(Car_ID, 0x01);
 
     if (establishConnectionReply())
     {
@@ -123,7 +122,7 @@ bool establishConnectionReply()
 void sendMessage(uint8_t CMD_TYPE, uint8_t CMD_VALUE)
 {
     rf95.setHeaderId(6);
-    uint8_t data = "testing thingy";
+    uint8_t data[3] = {CMD_TYPE, CMD_VALUE};
     rf95.send(data, sizeof(data));
     rf95.waitPacketSent();
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
