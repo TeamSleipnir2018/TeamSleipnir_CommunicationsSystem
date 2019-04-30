@@ -6,7 +6,7 @@
 #define RFM95_RST 25
 #define RFM95_INT 2
 
-RH_RF95 rf95(RFM95_CS, RFM95_INT);
+RH_RF95 rf95(RFM95_CS, RFM95_INT);  
 
 // Message definitions
 #define ERRORLED 3
