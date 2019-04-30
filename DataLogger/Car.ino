@@ -53,39 +53,31 @@ void recieveMessage()
     Serial.println("Waiting for reply...");
 
     // Max wait for data is 1 sec..
-    if (rf95.init()) //rf95.waitAvailableTimeout(100))
+    if (rf95.waitAvailableTimeout(100))
     {
         if (rf95.recv(buf, &len))
         {
-            Serial.println("Recv is true!");
             if (rf95.headerId() == Pit_ID)
             {
-                if (buf[2] == (buf[0] ^ buf[1]))
-                {
-                    connectionEstablishedToPit = true;
-                    DATA_TYPE = buf[0];
-                    DATA_VALUE = buf[1];
-                    DATA_ERROR = buf[2];
+                connectionEstablishedToPit = true;
+                DATA_TYPE = buf[0];
+                DATA_VALUE = buf[1];
+                DATA_ERROR = buf[2];
 
-                    switch (DATA_TYPE)
-                    {
-                    case 0x01:
-                        Serial.print("#ACK COMMAND: ");
-                        Serial.println(buf[1]);
-                        break;
-
-                    default:
-                        connectionEstablishedToPit = false;
-                        Serial.println("#FAILED");
-                        break;
-                    }
-                    sendMessage(0, REPLY_ACK);
-                }
-                else
+                switch (DATA_TYPE)
                 {
-                    Serial.println("CheakSum ERROR");
-                    //digitalWrite(ERRORLED, HIGH);
+                case 0x01:
+                    Serial.print("#ACK COMMAND: ");
+                    Serial.println(buf[1]);
+                    break;
+
+                default:
+                    connectionEstablishedToPit = false;
+                    Serial.println("#FAILED");
+                    break;
                 }
+                sendMessage(0, REPLY_ACK);
+
                 Serial.println((char *)buf);
                 Serial.print("RSSI: ");
                 Serial.println(rf95.lastRssi(), DEC);
@@ -99,9 +91,6 @@ void recieveMessage()
         else
         {
             Serial.println("ERROR: Receive message failed");
-            Serial.println(buf[0]);
-            Serial.println(buf[1]);
-            Serial.println(buf[2]);
         }
     }
     else
@@ -109,7 +98,6 @@ void recieveMessage()
         Serial.println("WARNING: ACK not received");
     }
     delay(1000);
-    //loop();
 }
 
 bool establishConnection()
@@ -131,6 +119,7 @@ bool establishConnectionReply()
     }
     return false;
 }
+
 void sendMessage(uint8_t CMD_TYPE, uint8_t CMD_VALUE)
 {
     rf95.setHeaderId(6);
@@ -163,7 +152,4 @@ void loop()
 {
     Serial.println("____________________________________________________________");
     delay(1000);
-    //recieveMessage();
-    sendMessage(72, 27);
-    //loop();
 }
