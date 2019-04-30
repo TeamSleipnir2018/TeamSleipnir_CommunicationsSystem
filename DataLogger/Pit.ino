@@ -6,8 +6,11 @@
 #define RFM95_RST 25
 #define RFM95_INT 2
 
-// Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
+
+// Message definitions
+#define REPLY_ACK 0x01
+#define REPLY_ERROR 0x03
 
 //the command I will be sending: nr.1-command type, nr.2-value and nr.3-error check.
 const int COMMAND_size = 3;
@@ -32,6 +35,8 @@ const uint8_t Car_ID = 6;
 
 void setup()
 {
+    delay(500);
+    Serial.println("Pit Lane Setup");
     Serial.begin(9600);
     while (!Serial)
         ; // Wait for serial port to be available
@@ -39,43 +44,60 @@ void setup()
         Serial.println("init failed");
 }
 
-void sendMessage(uint8_t CMD_TYPE, uint8_t CMD_VALUE)
+void sendMessage(uint8_t CMD)
 {
-    // check is the XOR of TYPE and VALUE
-    CMD_CHECK = CMD_VALUE ^ CMD_TYPE;
-    COMMAND[0] = CMD_TYPE;
-    COMMAND[1] = CMD_VALUE;
-    COMMAND[2] = CMD_CHECK;
-
-    if (!rf95.send((uint8_t *)COMMAND, COMMAND_size))
-        Serial.println("ERROR: Message not able to send!");
-
-    Serial.println("Reply Sent!");
-    delay(10);
+    rf95.setHeaderId(Car_ID);
+    uint8_t data[RH_RF95_MAX_MESSAGE_LEN] = {CMD};
+    uint8_t len = sizeof(data);
+  
+    rf95.send(data, sizeof(data));
     rf95.waitPacketSent();
-
-    //loop();
+    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+    
+    if (rf95.waitAvailableTimeout(4000))
+    {
+        if (rf95.recv(buf, &len))
+        {
+            Serial.print("got reply: ");
+            //Serial.println((char *)buf);
+            //Serial.print("RSSI: ");
+            //Serial.println(rf95.lastRssi(), DEC);
+            for ( int i = 0; i < len; i++)
+              {
+                Serial.print((char)buf[i]);
+              }
+              Serial.println("");
+        }
+        else
+        {
+            Serial.println("recv failed");
+        }
+    }
+    else
+    {
+        Serial.println("No reply, is rf95_server running?");
+    }
+    delay(10);
 }
 
 void recieveMessage()
 {
-    uint8_t buf[COMMAND_size] = {0, 0, 0};
+    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
 
     Serial.println("Waiting for reply...");
 
     // MAX wait for DATA is set 1 sec.
-    if (rf95.init()) //.waitAvailableTimeout(10))
+    if (rf95.waitAvailableTimeout(400))
     {
         if (rf95.recv(buf, &len))
         {
-            Serial.println("Recv is true!");
             if (rf95.headerId() == Car_ID)
             {
-                DATA_TYPE = buf[0];
-                DATA_VALUE = buf[1];
-                DATA_ERROR = buf[2];
-
+              for ( int i = 0; i < len; i++)
+              {
+                Serial.print((char)buf[i]);
+              }              
                 /*switch (DATA_TYPE)
           
           case 0x01:
@@ -89,11 +111,11 @@ void recieveMessage()
           //digitalWrite(ERRORLED, HIGH);
           break;*/
 
-                //sendMessage(0, REPLY_ACK);
+                sendMessage(REPLY_ACK);
 
-                Serial.println((char *)buf);
-                Serial.print("RSSI: ");
-                Serial.println(rf95.lastRssi(), DEC);
+                //Serial.println((char *)buf);
+                //Serial.print("RSSI: ");
+                //Serial.println(rf95.lastRssi(), DEC);
             }
             else
             {
@@ -104,9 +126,6 @@ void recieveMessage()
         else
         {
             Serial.println("Receive failed");
-            Serial.println(buf[0]);
-            Serial.println(buf[1]);
-            Serial.println(buf[2]);
         }
     }
     else
@@ -114,19 +133,11 @@ void recieveMessage()
         Serial.println("ACK not received");
     }
     delay(1000);
-    //loop();
 }
 
 void loop()
 {
-    Serial.println("____________________________________________________________");
-
-    delay(1000);
-    if (!rf95.available())
-    {
-        Serial.println("No message available from Car...");
-    }
+    //Serial.println("____________________________________________________________");
+    delay(10);
     recieveMessage();
-    //sendMessage(Pit_ID, REPLY_ACK);
-    //sendMessage(Car_ID, REPLY_ACK);
 }

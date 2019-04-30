@@ -38,11 +38,14 @@ const uint8_t Car_ID = 6;
 
 void setup()
 {
+    delay(500);
+    Serial.println("Race Car Setup");
     Serial.begin(9600);
     while (!Serial)
         ; // Wait for serial port to be available
     if (!rf95.init())
         Serial.println("init failed");
+    sendMessage(REPLY_ACK);
 }
 
 void recieveMessage()
@@ -52,7 +55,7 @@ void recieveMessage()
     Serial.println("Waiting for reply...");
 
     // Max wait for data is 1 sec..
-    if (rf95.waitAvailableTimeout(100))
+    if (rf95.waitAvailableTimeout(1000))
     {
         if (rf95.recv(buf, &len))
         {
@@ -75,7 +78,7 @@ void recieveMessage()
                     Serial.println("#FAILED");
                     break;
                 }
-                sendMessage(0, REPLY_ACK);
+                sendMessage(REPLY_ACK);
 
                 Serial.println((char *)buf);
                 Serial.print("RSSI: ");
@@ -101,7 +104,7 @@ void recieveMessage()
 
 bool establishConnection()
 {
-    sendMessage(Car_ID, 0x01);
+    sendMessage(REPLY_ACK);
 
     if (establishConnectionReply())
     {
@@ -119,22 +122,29 @@ bool establishConnectionReply()
     return false;
 }
 
-void sendMessage(uint8_t CMD_TYPE, uint8_t CMD_VALUE)
+void sendMessage(uint8_t CMD)
 {
-    rf95.setHeaderId(6);
-    uint8_t data[3] = {CMD_TYPE, CMD_VALUE};
+    rf95.setHeaderId(Car_ID);
+    uint8_t data[RH_RF95_MAX_MESSAGE_LEN] = {CMD};
+    uint8_t len = sizeof(data);
+  
     rf95.send(data, sizeof(data));
     rf95.waitPacketSent();
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-    uint8_t len = sizeof(buf);
-    if (rf95.waitAvailableTimeout(3000))
+    
+    if (rf95.waitAvailableTimeout(4000))
     {
         if (rf95.recv(buf, &len))
         {
             Serial.print("got reply: ");
-            Serial.println((char *)buf);
-            Serial.print("RSSI: ");
-            Serial.println(rf95.lastRssi(), DEC);
+            //Serial.println((char *)buf);
+            //Serial.print("RSSI: ");
+            //Serial.println(rf95.lastRssi(), DEC);
+            for ( int i = 0; i < len; i++)
+              {
+                Serial.print((char)buf[i]);
+              }
+              Serial.println("");
         }
         else
         {
@@ -145,10 +155,11 @@ void sendMessage(uint8_t CMD_TYPE, uint8_t CMD_VALUE)
     {
         Serial.println("No reply, is rf95_server running?");
     }
-    delay(400);
+    delay(10);
 }
+
 void loop()
 {
-    Serial.println("____________________________________________________________");
-    delay(1000);
+    //Serial.println("____________________________________________________________");
+    delay(10);
 }
