@@ -15,17 +15,6 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 //the command I will be sending: nr.1-command type, nr.2-value and nr.3-error check.
 const int COMMAND_size = 3;
 uint8_t COMMAND[COMMAND_size];
-uint8_t CMD_TYPE;
-uint8_t CMD_VALUE;
-uint8_t CMD_CHECK;
-
-//the data I will be recieving from the Flight Computer
-uint8_t DATA_TYPE;
-uint8_t DATA_VALUE;
-uint8_t DATA_ERROR;
-
-//Values
-uint8_t CurrentState = 0;
 
 // Pit Control caller ID
 const uint8_t Pit_ID = 7;
@@ -36,7 +25,7 @@ const uint8_t Car_ID = 6;
 void setup()
 {
     delay(500);
-    Serial.println("Pit Lane Setup");
+    //Serial.println("Pit Lane Setup");
     Serial.begin(9600);
     while (!Serial)
         ; // Wait for serial port to be available
@@ -49,24 +38,24 @@ void sendMessage(uint8_t CMD)
     rf95.setHeaderId(Car_ID);
     uint8_t data[RH_RF95_MAX_MESSAGE_LEN] = {CMD};
     uint8_t len = sizeof(data);
-  
+
     rf95.send(data, sizeof(data));
     rf95.waitPacketSent();
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-    
+
     if (rf95.waitAvailableTimeout(4000))
     {
         if (rf95.recv(buf, &len))
         {
-            Serial.print("got reply: ");
+            Serial.print("Got a reply: ");
             //Serial.println((char *)buf);
             //Serial.print("RSSI: ");
             //Serial.println(rf95.lastRssi(), DEC);
-            for ( int i = 0; i < len; i++)
-              {
+            for (int i = 0; i < len; i++)
+            {
                 Serial.print((char)buf[i]);
-              }
-              Serial.println("");
+            }
+            Serial.println("");
         }
         else
         {
@@ -75,7 +64,7 @@ void sendMessage(uint8_t CMD)
     }
     else
     {
-        Serial.println("No reply, is rf95_server running?");
+        Serial.println("No reply, is the Car sender running?");
     }
     delay(10);
 }
@@ -85,7 +74,7 @@ void recieveMessage()
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
 
-    Serial.println("Waiting for reply...");
+    //Serial.println("Waiting for reply...");
 
     // MAX wait for DATA is set 1 sec.
     if (rf95.waitAvailableTimeout(400))
@@ -94,32 +83,33 @@ void recieveMessage()
         {
             if (rf95.headerId() == Car_ID)
             {
-              for ( int i = 0; i < len; i++)
-              {
-                Serial.print((char)buf[i]);
-              }              
-                /*switch (DATA_TYPE)
-          
-          case 0x01:
-          Serial.print("#ACK COMMAND: ");
-          Serial.println(buf[1]);
-          //digitalWrite(ERRORLED, LOW);
-          
+                for (int i = 0; i < len; i++)
+                {
+                    Serial.print((char)buf[i]);
+                }
 
-          default:
-          Serial.println("#FAILED");
-          //digitalWrite(ERRORLED, HIGH);
-          break;*/
+                switch (buf[0])
+                {
+                case 0x01:
+                    Serial.print("#ACK COMMAND: ");
+                    Serial.println(buf[1]);
+                    //digitalWrite(ERRORLED, LOW);
+                    break;
+                
+                default:
+                    //Serial.println("#FAILED");
+                    //digitalWrite(ERRORLED, HIGH);
 
+                    break;
+                }
                 sendMessage(REPLY_ACK);
-
                 //Serial.println((char *)buf);
                 //Serial.print("RSSI: ");
                 //Serial.println(rf95.lastRssi(), DEC);
             }
             else
             {
-                Serial.println("Not my message, ID:");
+                Serial.println("Not my message, ID: ");
                 Serial.println(rf95.headerId());
             }
         }
