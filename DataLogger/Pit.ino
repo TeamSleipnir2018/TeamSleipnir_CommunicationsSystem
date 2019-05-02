@@ -5,6 +5,7 @@
 #define RFM95_CS 15
 #define RFM95_RST 25
 #define RFM95_INT 2
+#define HWSERIAL Serial1
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
@@ -27,6 +28,7 @@ void setup()
     delay(500);
     //Serial.println("Pit Lane Setup");
     Serial.begin(9600);
+    HWSERIAL.begin(9600);
     while (!Serial)
         ; // Wait for serial port to be available
     if (!rf95.init())
@@ -86,6 +88,7 @@ void recieveMessage()
                 for (int i = 0; i < len; i++)
                 {
                     Serial.print((char)buf[i]);
+                    HWSERIAL.print((char)buf[i]);
                 }
 
                 switch (buf[0])
