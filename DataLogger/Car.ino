@@ -112,7 +112,7 @@ bool establishConnectionReply()
 void sendMessage(uint8_t CMD)
 {
     rf95.setHeaderId(Car_ID);
-    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN] = {"this is a message"}; //{CMD};
+    uint8_t buf[COMMAND_size] = {"this is a message"}; //{CMD};
     uint8_t len = sizeof(buf);
 
     rf95.send(buf, sizeof(buf));

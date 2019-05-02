@@ -13,7 +13,7 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 #define REPLY_ERROR 0x03
 
 //the command I will be sending: nr.1-command type, nr.2-value and nr.3-error check.
-const int COMMAND_size = 3;
+const int COMMAND_size = RH_RF95_MAX_MESSAGE_LEN;
 uint8_t COMMAND[COMMAND_size];
 
 // Pit Control caller ID
@@ -36,12 +36,12 @@ void setup()
 void sendMessage(uint8_t CMD)
 {
     rf95.setHeaderId(Car_ID);
-    uint8_t data[RH_RF95_MAX_MESSAGE_LEN] = {CMD};
+    uint8_t data[COMMAND_size] = {CMD};
     uint8_t len = sizeof(data);
 
     rf95.send(data, sizeof(data));
     rf95.waitPacketSent();
-    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+    uint8_t buf[COMMAND_size];
 
     if (rf95.waitAvailableTimeout(4000))
     {
@@ -71,7 +71,7 @@ void sendMessage(uint8_t CMD)
 
 void recieveMessage()
 {
-    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+    uint8_t buf[COMMAND_size];
     uint8_t len = sizeof(buf);
 
     //Serial.println("Waiting for reply...");
