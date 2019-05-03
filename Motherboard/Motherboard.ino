@@ -1,18 +1,18 @@
 /******************************************************************
-Team Sleipnir communications motherboard
+RU Racing 2019 communications motherboard
 
 Hardware:
 - Teensy 3.6
-- XBee-PRO S2C
+- LoRa RF95
+- !XBee-PRO S2C
 - Adafruit Ultimate GPS Breakout v3
 - MCP2551 CAN transceiver
 
-Written by Einar Arnason
+Written by Einar Arnason && Örlygur Ólafsson
 ******************************************************************/
 
 #include <SPI.h>
 #include <RH_RF95.h>
-//#include <XBee.h>
 #include <SoftwareSerial.h>
 #include <stdint.h>
 #include <FlexCAN.h>
@@ -61,7 +61,8 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 //XBee xbee = XBee();
 // SH + SL Address of receiving XBee
 //XBeeAddress64 addr64 = XBeeAddress64(0xFF, 0xFE);
-//char payload[PAYLOAD_SIZE];
+
+char payload[PAYLOAD_SIZE];
 
 time_t getTeensy3Time()
 {
@@ -89,7 +90,9 @@ void setup()
 		;
 
 	if (!rf95.init())
+	{
 		Serial.println("init failed");
+	}
 
 	//init SD Card
 	while (!sd.begin())
@@ -100,6 +103,7 @@ void setup()
 
 	// set the Time library to use Teensy 3.0's RTC to keep time
 	setSyncProvider(getTeensy3Time);
+
 	if (timeStatus() != timeSet)
 	{
 		Serial.println("Unable to sync with the RTC");
@@ -110,10 +114,12 @@ void setup()
 	}
 
 	// Generate filename
-	sprintf(filename, "%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
+	sprintf(filename, "%d_%d_%d_%d_%d_%d.json",
+			year(), month(), day(), hour(), minute(), second());
 
 	//Create the File
 	outFile = sd.open(filename, FILE_WRITE);
+
 	if (!outFile)
 	{
 		Serial.println("Error: failed to open file");
@@ -166,8 +172,12 @@ SIGNAL(TIMER0_COMPA_vect)
 // if you want to debug, this is a good time to do it!
 #ifdef UDR0
 	if (GPSECHO)
+	{
 		if (c)
+		{
 			UDR0 = c;
+		}
+	}
 // writing direct to UDR0 is much much faster than Serial.print
 // but only one character can be written at a time.
 #endif
@@ -251,7 +261,18 @@ void loop()
 	*/
 	long time = getTeensy3Time();
 
+	// TEMP ! for analog suspension sensors. This is a placeholder
+	int FR = analogRead(A9);
+	int FL = analogRead(A9);
+	int RR = analogRead(A9);
+	int RL = analogRead(A9);
+
 	for (int i = 0; i < NUMBER_OF_MESSAGES; i++)
+	{
+		sprintf(payload, "{\"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", FR, FL, RR, RL);
+	}
+
+	/*for (int i = 0; i < NUMBER_OF_MESSAGES; i++)
 	{
 		switch (i)
 		{
@@ -291,17 +312,16 @@ void loop()
 					canListener.vehicle.cylcontrib3,
 					canListener.vehicle.cylcontrib4);
 			break;
-		}
+		}*/
 
-		ZBTxRequest zbTx = ZBTxRequest(addr64, (uint8_t *)payload, payloadLength());
-		ZBTxStatusResponse txStatus = ZBTxStatusResponse();
-		//xbee.send(zbTx);
-		// after sending a tx request, we expect a status response
-		// wait up to half second for the status response
-		/*if (xbee.readPacket(500))
+	//ZBTxRequest zbTx = ZBTxRequest(addr64, (uint8_t *)payload, payloadLength());
+	//ZBTxStatusResponse txStatus = ZBTxStatusResponse();
+	//xbee.send(zbTx);
+	// after sending a tx request, we expect a status response
+	// wait up to half second for the status response
+	/*if (xbee.readPacket(500))
 		{
 			// got a response!
-
 			// should be a znet tx status
 			if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE)
 			{
@@ -331,10 +351,91 @@ void loop()
 			Serial.println("local XBee did not provide a timely TX Status Response");
 		}*/
 
-		if (outFile)
+	if (outFile)
+	{
+		outFile.write(payload);
+		outFile.flush();
+	}
+}
+
+void sendMessageLoRa(uint8_t CMD)
+{
+	rf95.setHeaderId(Car_ID);
+	uint8_t buf[COMMAND_size] = {CMD};
+	uint8_t len = sizeof(buf);
+
+	rf95.send(buf, sizeof(buf));
+	rf95.waitPacketSent();
+
+	if (rf95.waitAvailableTimeout(4000))
+	{
+		if (rf95.recv(buf, &len))
 		{
-			outFile.write(payload);
-			outFile.flush();
+			Serial.print("Got a reply: ");
+			//Serial.println((char *)buf);
+			//Serial.print("RSSI: ");
+			//Serial.println(rf95.lastRssi(), DEC);
+			for (int i = 0; i < len; i++)
+			{
+				Serial.print((char)buf[i]);
+			}
+			Serial.println("");
+		}
+		else
+		{
+			Serial.println("recv failed");
 		}
 	}
+	else
+	{
+		Serial.println("No reply, is rf95_server running?");
+	}
+	delay(10);
+}
+
+void recieveMessage()
+{
+	uint8_t buf[COMMAND_size];
+	uint8_t len = sizeof(buf);
+	//Serial.println("Waiting for reply...");
+
+	// Max wait for data is 1 sec..
+	if (rf95.waitAvailableTimeout(1000))
+	{
+		if (rf95.recv(buf, &len))
+		{
+			if (rf95.headerId() == Pit_ID)
+			{
+				switch (buf[0])
+				{
+				case 0:
+					Serial.print("#ACK COMMAND: ");
+					Serial.println(COMMAND[1]);
+					break;
+
+				default:
+					Serial.println("#FAILED");
+					break;
+				}
+				//sendMessage(REPLY_ACK);
+				//Serial.println((char *)buf);
+				//Serial.print("RSSI: ");
+				//Serial.println(rf95.lastRssi(), DEC);
+			}
+			else
+			{
+				Serial.println("Not my message, ID: ");
+				Serial.println(rf95.headerId());
+			}
+		}
+		else
+		{
+			Serial.println("ERROR: Receive message failed");
+		}
+	}
+	else
+	{
+		Serial.println("WARNING: ACK not received");
+	}
+	delay(1000);
 }
