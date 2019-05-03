@@ -32,7 +32,7 @@ const uint8_t Car_ID = 6;
 void setup()
 {
     delay(500);
-    Serial.println("Race Car Setup");
+    //Serial.println("Race Car Setup");
     Serial.begin(9600);
     while (!Serial)
         ; // Wait for serial port to be available
