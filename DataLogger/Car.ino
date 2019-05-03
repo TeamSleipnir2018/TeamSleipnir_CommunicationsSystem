@@ -118,9 +118,6 @@ void sendMessage(uint8_t CMD)
     rf95.send(buf, sizeof(buf));
     rf95.waitPacketSent();
 
-    buf = { };
-    //uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-
     if (rf95.waitAvailableTimeout(4000))
     {
         if (rf95.recv(buf, &len))
