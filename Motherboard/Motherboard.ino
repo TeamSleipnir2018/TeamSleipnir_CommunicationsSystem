@@ -2,13 +2,13 @@
 RU Racing 2019 communications motherboard
 
 Hardware:
-- Teensy 3.6
+- Teensy 3.5
 - LoRa RF95
 - !XBee-PRO S2C
 - Adafruit Ultimate GPS Breakout v3
 - MCP2551 CAN transceiver
 
-Written by Einar Arnason && Örlygur Ólafsson
+Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 ******************************************************************/
 
 #include <SPI.h>
@@ -21,7 +21,7 @@ Written by Einar Arnason && Örlygur Ólafsson
 //#include <Adafruit_GPS.h>
 #include "constants.h"
 #include "CanListener.h"
-
+#include "TeensyThreads.h"
 // CAN bus driver
 CanListener canListener;
 CAN_filter_t mask;
@@ -32,6 +32,13 @@ CAN_filter_t mask;
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences.
 const bool GPSECHO = true;
+
+// Variables for Copernicus II GPS module
+float flat, flon;
+unsigned long age;
+int year;
+byte month, day, hour, minute, second, hundredth;
+bool newGpsData = false;
 
 // this keeps track of whether we're using the interrupt
 // off by default!
@@ -63,6 +70,31 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 //XBeeAddress64 addr64 = XBeeAddress64(0xFF, 0xFE);
 
 char payload[PAYLOAD_SIZE];
+
+void gpsRead()
+{
+	while (1)
+	{
+
+		unsigned long chars;
+		unsigned short sentences, failed;
+
+		// For one second we parse GPS data and report some key values
+		for (unsigned long start = millis(); millis() - start < 1000;)
+		{
+			while (Serial3.available())
+			{
+				char c = Serial3.read();
+				// Serial.write(c); // uncomment this line if you want to see the GPS data flowing
+				if (gps.encode(c)) // Did a new valid sentence come in?
+					newGpsData = true;
+			}
+		}
+		// Write the position and current time to variables
+		gps.f_get_position(&flat, &flon, &age);
+		gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredth, &age);
+	}
+}
 
 time_t getTeensy3Time()
 {
@@ -125,6 +157,9 @@ void setup()
 		Serial.println("Error: failed to open file");
 	};
 
+	threads.addThread(gpsRead);
+
+	Serial3.begin(4800);
 	// Initialize the CAN bus
 	mask.flags.extended = 0;
 	mask.flags.remote = 0;
@@ -162,6 +197,23 @@ void setup()
 	useInterrupt(true);
 #endif
 */
+
+	// Copernicuse GPS if new data write new data
+	// ToDo, breita serial print i SD.Write og Lora Send
+	Serial.print("LAT=");
+	Serial.print(flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6);
+
+	Serial.print(" LON=");
+	Serial.print(flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6);
+
+	Serial.print(" TIME=");
+	Serial.print(hour, DEC);
+	Serial.print(":");
+	Serial.print(minute, DEC);
+	Serial.print(":");
+	Serial.print(second, DEC);
+	Serial.print(",");
+	Serial.println(hundredth, DEC);
 }
 
 #ifdef __AVR__
