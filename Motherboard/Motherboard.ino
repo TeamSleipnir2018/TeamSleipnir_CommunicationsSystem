@@ -36,7 +36,7 @@ const bool GPSECHO = true;
 // Variables for Copernicus II GPS module
 float flat, flon;
 unsigned long age;
-int year;
+//int year;
 byte month, day, hour, minute, second, hundredth;
 bool newGpsData = false;
 
@@ -69,6 +69,7 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 // SH + SL Address of receiving XBee
 //XBeeAddress64 addr64 = XBeeAddress64(0xFF, 0xFE);
 
+uint8_t PAYLOAD_SIZE = payloadLength();
 char payload[PAYLOAD_SIZE];
 
 void gpsRead()
