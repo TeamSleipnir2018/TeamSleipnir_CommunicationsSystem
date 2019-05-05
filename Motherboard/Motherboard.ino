@@ -22,12 +22,14 @@ Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 #include "constants.h"
 #include "CanListener.h"
 #include "TeensyThreads.h"
+#include <TinyGPS.h>
+
 // CAN bus driver
 CanListener canListener;
 CAN_filter_t mask;
 
 // GPS object
-//Adafruit_GPS GPS(&Serial3);
+TinyGPS gps;
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences.
@@ -52,9 +54,9 @@ char filename[20];
 
 // LoRa & Teensy 3.5 setup
 #define RF95_FREQ 434.0
-#define RFM95_CS 15
+#define RFM95_CS 10
 #define RFM_RST 25
-#define RFM95_INT 2
+#define RFM95_INT 24
 #define ERRORLED 3
 const int COMMAND_SIZE = RH_RF95_MAX_MESSAGE_LEN;
 uint8_t COMMAND[COMMAND_SIZE];
@@ -64,11 +66,6 @@ const uint8_t Car_ID = 6;
 // LoRa - Radio Frequency driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-// XBee driver
-//XBee xbee = XBee();
-// SH + SL Address of receiving XBee
-//XBeeAddress64 addr64 = XBeeAddress64(0xFF, 0xFE);
-
 uint8_t PAYLOAD_SIZE = payloadLength();
 char payload[PAYLOAD_SIZE];
 
@@ -76,7 +73,6 @@ void gpsRead()
 {
 	while (1)
 	{
-
 		unsigned long chars;
 		unsigned short sentences, failed;
 
@@ -162,12 +158,12 @@ void setup()
 
 	Serial3.begin(4800);
 	// Initialize the CAN bus
-	mask.flags.extended = 0;
+	/*mask.flags.extended = 0;
 	mask.flags.remote = 0;
 	mask.id = 0;
 	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
 	Can0.attachObj(&canListener);
-	canListener.attachGeneralHandler();
+	canListener.attachGeneralHandler();*/
 
 	// Initialize XBee serial
 	//Serial2.begin(9600);
@@ -259,59 +255,6 @@ uint32_t timer = millis();
 
 void loop()
 {
-	/*
-	// in case you are not using the interrupt above, you'll
-	// need to 'hand query' the GPS, not suggested :(
-	if (! usingInterrupt) {
-	// read data from the GPS in the 'main loop'
-	char c = GPS.read();
-	// if you want to debug, this is a good time to do it!
-	if (GPSECHO)
-		if (c) Serial.print(c);
-	}
-  
-	// if a sentence is received, we can check the checksum, parse it...
-	if (GPS.newNMEAreceived()) {
-	// a tricky thing here is if we print the NMEA sentence, or data
-	// we end up not listening and catching other sentences! 
-	// so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-	//Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
-  
-	if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
-		return;  // we can fail to parse a sentence in which case we should just wait for another
-	}
-
-	// if millis() or timer wraps around, we'll just reset it
-	if (timer > millis())  timer = millis();
-
-	// approximately every 2 seconds or so, print out the current stats
-	if (millis() - timer > 2000) { 
-		timer = millis(); // reset the timer
-    
-		Serial.print("\nTime: ");
-		Serial.print(GPS.hour, DEC); Serial.print(':');
-		Serial.print(GPS.minute, DEC); Serial.print(':');
-		Serial.print(GPS.seconds, DEC); Serial.print('.');
-		Serial.println(GPS.milliseconds);
-		Serial.print("Date: ");
-		Serial.print(GPS.day, DEC); Serial.print('/');
-		Serial.print(GPS.month, DEC); Serial.print("/20");
-		Serial.println(GPS.year, DEC);
-		Serial.print("Fix: "); Serial.print((int)GPS.fix);
-		Serial.print(" quality: "); Serial.println((int)GPS.fixquality); 
-		if (GPS.fix) {
-			Serial.print("Location: ");
-			Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
-			Serial.print(", "); 
-			Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
-      
-			Serial.print("Speed (knots): "); Serial.println(GPS.speed);
-			Serial.print("Angle: "); Serial.println(GPS.angle);
-			Serial.print("Altitude: "); Serial.println(GPS.altitude);
-			Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
-		}
-	}
-	*/
 	long time = getTeensy3Time();
 
 	// TEMP ! for analog suspension sensors. This is a placeholder
@@ -324,86 +267,7 @@ void loop()
 	{
 		sprintf(payload, "{\"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", FR, FL, RR, RL);
 	}
-
-	/*for (int i = 0; i < NUMBER_OF_MESSAGES; i++)
-	{
-		switch (i)
-		{
-		case 0:
-			sprintf(payload,
-					"{\"time\": %ld, \"rpm\": %d, \"volt\": %0.2f, \"waterTemp\": %0.2f, \"speed\": %d}!",
-					time,
-					canListener.vehicle.rpm,
-					canListener.vehicle.voltage,
-					canListener.vehicle.waterTemp,
-					canListener.vehicle.speed);
-			break;
-		case 1:
-			sprintf(payload,
-					"{\"time\": %ld, \"oilTemp\": %0.2f, \"gear\": %d, \"airTemp\": %0.2f, \"map\": %d}!",
-					time,
-					canListener.vehicle.oilTemp,
-					canListener.vehicle.gear,
-					canListener.vehicle.airTemp,
-					canListener.vehicle.map);
-			break;
-		case 2:
-			sprintf(payload,
-					"{\"time\": %ld, \"ecuTemp\": %0.2f, \"fuelPressure\": %0.2f, \"fanOn\": %s, \"fuelPumpOn\": %s}!",
-					time,
-					canListener.vehicle.ecuTemp,
-					canListener.vehicle.fuelPressure,
-					canListener.vehicle.fanOn ? "true" : "false",
-					canListener.vehicle.fuelPumpOn ? "true" : "false");
-			break;
-		case 3:
-			sprintf(payload,
-					"{\"time\": %ld, \"cylcontrib1\": %d, \"cylcontrib2\": %d, \"cylcontrib3\": %d, \"cylcontrib4\": %d}!",
-					time,
-					canListener.vehicle.cylcontrib1,
-					canListener.vehicle.cylcontrib2,
-					canListener.vehicle.cylcontrib3,
-					canListener.vehicle.cylcontrib4);
-			break;
-		}*/
-
-	//ZBTxRequest zbTx = ZBTxRequest(addr64, (uint8_t *)payload, payloadLength());
-	//ZBTxStatusResponse txStatus = ZBTxStatusResponse();
-	//xbee.send(zbTx);
-	// after sending a tx request, we expect a status response
-	// wait up to half second for the status response
-	/*if (xbee.readPacket(500))
-		{
-			// got a response!
-			// should be a znet tx status
-			if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE)
-			{
-				xbee.getResponse().getZBTxStatusResponse(txStatus);
-
-				// get the delivery status, the fifth byte
-				if (txStatus.getDeliveryStatus() == SUCCESS)
-				{
-					// success.  time to celebrate
-					Serial.println("Success!");
-				}
-				else
-				{
-					// the remote XBee did not receive our packet. is it powered on?
-					Serial.println("the remote XBee did not receive packet");
-				}
-			}
-		}
-		else if (xbee.getResponse().isError())
-		{
-			Serial.print("Error reading packet.  Error code: ");
-			Serial.println(xbee.getResponse().getErrorCode());
-		}
-		else
-		{
-			// local XBee did not provide a timely TX Status Response -- should not happen
-			Serial.println("local XBee did not provide a timely TX Status Response");
-		}*/
-
+	
 	if (outFile)
 	{
 		outFile.write(payload);
