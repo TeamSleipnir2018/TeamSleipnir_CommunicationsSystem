@@ -316,9 +316,9 @@ void loop()
 
 	// TEMP ! for analog suspension sensors. This is a placeholder
 	int FR = analogRead(A9);
-	int FL = analogRead(A9);
-	int RR = analogRead(A9);
-	int RL = analogRead(A9);
+	int FL = analogRead(A8);
+	int RR = analogRead(A7);
+	int RL = analogRead(A6);
 
 	for (int i = 0; i < NUMBER_OF_MESSAGES; i++)
 	{
