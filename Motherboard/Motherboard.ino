@@ -37,9 +37,6 @@ const bool GPSECHO = true;
 
 // Variables for Copernicus II GPS module
 float flat, flon;
-//unsigned long age;
-//int year;
-//byte month, day, hour, minute, second, hundredth;
 bool newGpsData = false;
 
 // this keeps track of whether we're using the interrupt off by default!
@@ -104,14 +101,14 @@ void gpsRead()
 
 uint8_t payloadLength()
 {
-  for (int i = 0; i < PAYLOAD_SIZE; i++)
-  {
-    if (payload[i] == '!')
-    {
-      return i;
-    }
-  }
-  return PAYLOAD_SIZE;
+	for (int i = 0; i < PAYLOAD_SIZE; i++)
+	{
+		if (payload[i] == '!')
+		{
+			return i;
+		}
+	}
+	return PAYLOAD_SIZE;
 }
 
 void setup()
@@ -196,10 +193,11 @@ void loop()
 	int FL = analogRead(A8);
 	int RR = analogRead(A7);
 	int RL = analogRead(A6);
+	long time = getTeensy3Time();
 
 	for (int i = 0; i < NUMBER_OF_MESSAGES; i++)
 	{
-		sprintf(payload, "{\"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", FR, FL, RR, RL);
+		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL);
 	}
 
 	if (outFile)
