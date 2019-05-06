@@ -4,7 +4,6 @@ RU Racing 2019 communications motherboard
 Hardware:
 - Teensy 3.5
 - LoRa RF95
-- !XBee-PRO S2C
 - Adafruit Ultimate GPS Breakout v3
 - MCP2551 CAN transceiver
 
@@ -195,9 +194,10 @@ void loop()
 	int RL = analogRead(A6);
 	long time = getTeensy3Time();
 
-	for (int i = 0; i < NUMBER_OF_MESSAGES; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL);
+		sprintf(payload, {\"time\": %ld, \"pitch"\": %d, \"yaw\": %d, \"roll\": %d}!", time, pitch, yaw,roll); }
 	}
 
 	if (outFile)
