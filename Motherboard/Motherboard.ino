@@ -15,21 +15,21 @@ Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 #include <RH_RF95.h>
 #include <SoftwareSerial.h>
 #include <stdint.h>
-#include <FlexCAN.h>
+//#include <FlexCAN.h>
 #include <SdFat.h>
 #include <TimeLib.h>
-//#include <Adafruit_GPS.h>
-#include "constants.h"
-#include "CanListener.h"
+//#include "constants.h"
+//#include "CanListener.h"
 #include "TeensyThreads.h"
 #include <TinyGPS.h>
 
 // CAN bus driver
-CanListener canListener;
-CAN_filter_t mask;
+//CanListener canListener;
+//CAN_filter_t mask;
 
 // GPS object
 TinyGPS gps;
+const int NUMBER_OF_MESSAGES = 4;
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences.
@@ -37,13 +37,12 @@ const bool GPSECHO = true;
 
 // Variables for Copernicus II GPS module
 float flat, flon;
-unsigned long age;
+//unsigned long age;
 //int year;
-byte month, day, hour, minute, second, hundredth;
+//byte month, day, hour, minute, second, hundredth;
 bool newGpsData = false;
 
-// this keeps track of whether we're using the interrupt
-// off by default!
+// this keeps track of whether we're using the interrupt off by default!
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 
@@ -66,16 +65,23 @@ const uint8_t Car_ID = 6;
 // LoRa - Radio Frequency driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-uint8_t PAYLOAD_SIZE = payloadLength();
+const int PAYLOAD_SIZE = 20; //payloadLength();
 char payload[PAYLOAD_SIZE];
+
+time_t getTeensy3Time()
+{
+	return Teensy3Clock.get();
+}
 
 void gpsRead()
 {
+	unsigned long age;
+	int year;
+	byte month, day, hour, minute, second, hundredth;
 	while (1)
 	{
-		unsigned long chars;
-		unsigned short sentences, failed;
-
+		//unsigned long chars;
+		//unsigned short sentences, failed;
 		// For one second we parse GPS data and report some key values
 		for (unsigned long start = millis(); millis() - start < 1000;)
 		{
@@ -83,8 +89,11 @@ void gpsRead()
 			{
 				char c = Serial3.read();
 				// Serial.write(c); // uncomment this line if you want to see the GPS data flowing
-				if (gps.encode(c)) // Did a new valid sentence come in?
+				if (gps.encode(c))
+				{
+					// Did a new valid sentence come in?
 					newGpsData = true;
+				}
 			}
 		}
 		// Write the position and current time to variables
@@ -93,27 +102,23 @@ void gpsRead()
 	}
 }
 
-time_t getTeensy3Time()
-{
-	return Teensy3Clock.get();
-}
-
 uint8_t payloadLength()
 {
-	for (int i = 0; i < PAYLOAD_SIZE; i++)
-	{
-		if (payload[i] == '!')
-		{
-			return i;
-		}
-	}
-	return PAYLOAD_SIZE;
+  for (int i = 0; i < PAYLOAD_SIZE; i++)
+  {
+    if (payload[i] == '!')
+    {
+      return i;
+    }
+  }
+  return PAYLOAD_SIZE;
 }
 
 void setup()
 {
 	delay(500);
 	Serial.begin(9600);
+	Serial3.begin(4800);
 
 	while (!Serial)
 		;
@@ -137,14 +142,10 @@ void setup()
 	{
 		Serial.println("Unable to sync with the RTC");
 	}
-	else
-	{
-		Serial.println("RTC has set the system time");
-	}
+	Serial.println("RTC has set the system time");
 
 	// Generate filename
-	sprintf(filename, "%d_%d_%d_%d_%d_%d.json",
-			year(), month(), day(), hour(), minute(), second());
+	sprintf(filename, "%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
 
 	//Create the File
 	outFile = sd.open(filename, FILE_WRITE);
@@ -156,106 +157,39 @@ void setup()
 
 	threads.addThread(gpsRead);
 
-	Serial3.begin(4800);
 	// Initialize the CAN bus
 	/*mask.flags.extended = 0;
-	mask.flags.remote = 0;
-	mask.id = 0;
-	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
-	Can0.attachObj(&canListener);
-	canListener.attachGeneralHandler();*/
-
-	// Initialize XBee serial
-	//Serial2.begin(9600);
-	//xbee.setSerial(Serial2);
-
-	/*
-	// 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
-	GPS.begin(9600);
-	Serial3.begin(9600);
-
-	// uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
-	GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-	// uncomment this line to turn on only the "minimum recommended" data
-	//GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
-	// For parsing data, we don't suggest using anything but either RMC only or RMC+GGA since
-	// the parser doesn't care about other sentences at this time
-  
-	// Set the update rate
-	GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
-	// For the parsing code to work nicely and have time to sort thru the data, and
-	// print it out we don't suggest using anything higher than 1 Hz
-
-	// Request updates on antenna status, comment out to keep quiet
-	GPS.sendCommand(PGCMD_ANTENNA);
-#ifdef __arm__
-	usingInterrupt = false;  //NOTE - we don't want to use interrupts on the Due
-#else
-	useInterrupt(true);
-#endif
-*/
-
-	// Copernicuse GPS if new data write new data
-	// ToDo, breita serial print i SD.Write og Lora Send
-	Serial.print("LAT=");
-	Serial.print(flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6);
-
-	Serial.print(" LON=");
-	Serial.print(flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6);
-
-	Serial.print(" TIME=");
-	Serial.print(hour, DEC);
-	Serial.print(":");
-	Serial.print(minute, DEC);
-	Serial.print(":");
-	Serial.print(second, DEC);
-	Serial.print(",");
-	Serial.println(hundredth, DEC);
+  	mask.flags.remote = 0;
+  	mask.id = 0;
+  	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
+  	Can0.attachObj(&canListener);
+  	canListener.attachGeneralHandler();*/
 }
-
-#ifdef __AVR__
-// Interrupt is called once a millisecond, looks for any new GPS data, and stores it
-SIGNAL(TIMER0_COMPA_vect)
-{
-	char c = GPS.read();
-// if you want to debug, this is a good time to do it!
-#ifdef UDR0
-	if (GPSECHO)
-	{
-		if (c)
-		{
-			UDR0 = c;
-		}
-	}
-// writing direct to UDR0 is much much faster than Serial.print
-// but only one character can be written at a time.
-#endif
-}
-
-void useInterrupt(boolean v)
-{
-	if (v)
-	{
-		// Timer0 is already used for millis() - we'll just interrupt somewhere
-		// in the middle and call the "Compare A" function above
-		OCR0A = 0xAF;
-		TIMSK0 |= _BV(OCIE0A);
-		usingInterrupt = true;
-	}
-	else
-	{
-		// do not call the interrupt function COMPA anymore
-		TIMSK0 &= ~_BV(OCIE0A);
-		usingInterrupt = false;
-	}
-}
-#endif //#ifdef__AVR__
 
 uint32_t timer = millis();
 
 void loop()
 {
-	long time = getTeensy3Time();
+	if (newGpsData)
+	{
+		// Copernicuse GPS if new data write new data
+		// ToDo, breita serial print i SD.Write og Lora Send
+		Serial.print("LAT=");
+		Serial.print(flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6);
+		Serial.print(" LON=");
+		Serial.print(flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6);
+
+		Serial.print(" TIME=");
+		Serial.print(hour(), DEC);
+		Serial.print(":");
+		Serial.print(minute(), DEC);
+		Serial.print(":");
+		Serial.print(second(), DEC);
+		Serial.print(",");
+		Serial.println("0.");
+		newGpsData = false;
+	}
+	char payload[30];
 
 	// TEMP ! for analog suspension sensors. This is a placeholder
 	int FR = analogRead(A9);
@@ -267,7 +201,7 @@ void loop()
 	{
 		sprintf(payload, "{\"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", FR, FL, RR, RL);
 	}
-	
+
 	if (outFile)
 	{
 		outFile.write(payload);
@@ -278,7 +212,7 @@ void loop()
 void sendMessageLoRa(uint8_t CMD)
 {
 	rf95.setHeaderId(Car_ID);
-	uint8_t buf[COMMAND_size] = {CMD};
+	uint8_t buf[COMMAND_SIZE] = {"message"}; //{CMD};
 	uint8_t len = sizeof(buf);
 
 	rf95.send(buf, sizeof(buf));
@@ -296,7 +230,7 @@ void sendMessageLoRa(uint8_t CMD)
 			{
 				Serial.print((char)buf[i]);
 			}
-			Serial.println("");
+			Serial.println(" ");
 		}
 		else
 		{
@@ -312,7 +246,7 @@ void sendMessageLoRa(uint8_t CMD)
 
 void recieveMessage()
 {
-	uint8_t buf[COMMAND_size];
+	uint8_t buf[COMMAND_SIZE];
 	uint8_t len = sizeof(buf);
 	//Serial.println("Waiting for reply...");
 
