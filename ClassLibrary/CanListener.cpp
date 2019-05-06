@@ -1,19 +1,23 @@
 #include "CanListener.h"
 
-inline float CanListener::CANIntToFloat(uint16_t floatValue) {
+inline float CanListener::CANIntToFloat(uint16_t floatValue)
+{
 	return floatValue / 1000.0;
 }
 
-inline float CanListener::CANKelvinToFloat(uint16_t kelvinValue) {
+inline float CanListener::CANKelvinToFloat(uint16_t kelvinValue)
+{
 	float result = kelvinValue / 10.0;
 	result = result - 273.15;
 
 	return result;
 }
 
-bool CanListener::frameHandler(CAN_message_t &frame, int mailbox, uint8_t controller) {
+bool CanListener::frameHandler(CAN_message_t &frame, int mailbox, uint8_t controller)
+{
 
-	switch (frame.id) {
+	switch (frame.id)
+	{
 	case 1:
 		vehicle.rpm = frame.buf[0] | (frame.buf[1] << 8);
 		vehicle.voltage = CANIntToFloat(frame.buf[2] | (frame.buf[3] << 8));

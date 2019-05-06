@@ -1,6 +1,7 @@
 #include "Vehicle.h"
 
-Vehicle::Vehicle() {
+Vehicle::Vehicle()
+{
 	// Initialize car values
 	rpm = 0;
 	prevRPM = 1;
@@ -33,6 +34,5 @@ Vehicle::Vehicle() {
 	cylcontrib3 = 0;
 	prevCylcontrib4 = 1;
 }
-
 
 Vehicle::~Vehicle() {}

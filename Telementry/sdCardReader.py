@@ -17,6 +17,7 @@ try:
 except:
     print("Unable to connect to the database")
 
+
 def main():
 
     cursor.execute('''
@@ -66,16 +67,17 @@ def main():
                         values = json.loads(entry)
                         MessageTime = values['time']
 
-                        cursor.execute("SELECT time FROM vehicledata WHERE time = to_timestamp({})".format(MessageTime))
+                        cursor.execute(
+                            "SELECT time FROM vehicledata WHERE time = to_timestamp({})".format(MessageTime))
                         conn.commit()
 
-                        if cursor.fetchone() is None :
+                        if cursor.fetchone() is None:
                             cursor.execute('''
                             INSERT INTO vehicledata (time)
                             VALUES (to_timestamp({}))
                             '''.format(MessageTime))
 
-                        for key, value in values.items() :
+                        for key, value in values.items():
                             if key != "time":
                                 cursor.execute('''
                                 UPDATE vehicledata 
@@ -88,6 +90,7 @@ def main():
                         print(entry)
         except Exception as e:
             print(e)
+
 
 if __name__ == "__main__":
     main()

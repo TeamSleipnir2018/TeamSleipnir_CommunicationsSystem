@@ -43,28 +43,27 @@ uint8_t ledBarSetBits;
 uint8_t srWarningCounter;
 uint8_t srLedCounter;
 
-void printIcons() {
+void printIcons()
+{
 	tft.graphicsMode();
 	// Draw the icon for cooling fan
 	drawFanIcon();
 	// Draw battery icon
 	tft.drawXBitmap(
-		batteryIconPos[xPos], 
-		batteryIconPos[yPos], 
-		batteryIcon, 
-		batteryWidth, 
-		batteryHeight, 
-		RA8875_WHITE
-	);
+		batteryIconPos[xPos],
+		batteryIconPos[yPos],
+		batteryIcon,
+		batteryWidth,
+		batteryHeight,
+		RA8875_WHITE);
 	// Draw engine oil temperature icon
 	tft.drawXBitmap(
-		oilLabelPos[xPos], 
-		oilLabelPos[yPos], 
-		oilTempIcon, 
-		oilTempWidth, 
-		oilTempHeight, 
-		RA8875_WHITE
-	);
+		oilLabelPos[xPos],
+		oilLabelPos[yPos],
+		oilTempIcon,
+		oilTempWidth,
+		oilTempHeight,
+		RA8875_WHITE);
 	// Draw coolant temperature icon
 	tft.drawXBitmap(
 		waterLabelPos[xPos],
@@ -72,8 +71,7 @@ void printIcons() {
 		waterTempIcon,
 		waterTempWidth,
 		waterTempHeight,
-		RA8875_WHITE
-	);
+		RA8875_WHITE);
 	// Draw ECU temperature icon
 	tft.drawXBitmap(
 		ecuLabelPos[xPos],
@@ -81,8 +79,7 @@ void printIcons() {
 		ecuTempIcon,
 		ecuTempWidth,
 		ecuTempHeight,
-		RA8875_WHITE
-	);
+		RA8875_WHITE);
 	// Draw fuel pressure icon
 	tft.drawXBitmap(
 		fuelPressureIconPos[xPos],
@@ -90,12 +87,12 @@ void printIcons() {
 		fuelPressureIcon,
 		fuelPressureWidth,
 		fuelPressureHeight,
-		RA8875_WHITE
-	);
+		RA8875_WHITE);
 	tft.textMode();
 }
 
-void printLabels() {
+void printLabels()
+{
 	tft.textEnlarge(3);
 	tft.textSetCursor(speedLabelPos[xPos], speedLabelPos[yPos]);
 	tft.textWrite("km/h");
@@ -104,7 +101,8 @@ void printLabels() {
 	tft.textWrite(" RPM");
 }
 
-void printFrames() {
+void printFrames()
+{
 	tft.drawFastVLine(280, 0, 480, RA8875_WHITE);
 	tft.drawFastVLine(500, 0, 480 - (480 - 350), RA8875_WHITE);
 	tft.drawFastHLine(280, 350, (800 - 280), RA8875_WHITE);
@@ -114,14 +112,15 @@ void printFrames() {
 	tft.drawFastHLine(0, voltagePos[yPos] + batteryHeight + 30, 280, RA8875_WHITE);
 }
 
-void printInt(const uint16_t& x,
-	const uint16_t& y,
-	const uint16_t& value,
-	uint16_t& prevValue,
-	char charValue[],
-	const uint8_t len,
-	const uint8_t& fontSize,
-	bool warning) {
+void printInt(const uint16_t &x,
+			  const uint16_t &y,
+			  const uint16_t &value,
+			  uint16_t &prevValue,
+			  char charValue[],
+			  const uint8_t len,
+			  const uint8_t &fontSize,
+			  bool warning)
+{
 
 	sprintf(charValue, "%*d", len, value);
 	prevValue = value;
@@ -129,14 +128,15 @@ void printInt(const uint16_t& x,
 }
 
 void printFloat(
-	const uint16_t& x,
-	const uint16_t& y,
-	const float& value,
-	float& prevValue,
+	const uint16_t &x,
+	const uint16_t &y,
+	const float &value,
+	float &prevValue,
 	char charValue[],
-	const uint8_t& len,
-	const uint8_t& fontSize,
-	bool warning) {
+	const uint8_t &len,
+	const uint8_t &fontSize,
+	bool warning)
+{
 
 	sprintf(charValue, "%*.02f", len, value);
 	prevValue = value;
@@ -144,14 +144,15 @@ void printFloat(
 }
 
 void printFloatNoPoint(
-	const uint16_t& x,
-	const uint16_t& y,
-	const float& value,
-	float& prevValue,
+	const uint16_t &x,
+	const uint16_t &y,
+	const float &value,
+	float &prevValue,
 	char charValue[],
-	const uint8_t& len,
-	const uint8_t& fontSize,
-	bool warning) {
+	const uint8_t &len,
+	const uint8_t &fontSize,
+	bool warning)
+{
 
 	sprintf(charValue, "%*d", len, (int)value);
 	prevValue = value;
@@ -159,29 +160,34 @@ void printFloatNoPoint(
 }
 
 void printValue(
-	const uint16_t& x,
-	const uint16_t& y,
+	const uint16_t &x,
+	const uint16_t &y,
 	char charValue[],
-	const uint8_t& len,
-	const uint8_t& fontSize,
-	bool warning
-	) {
+	const uint8_t &len,
+	const uint8_t &fontSize,
+	bool warning)
+{
 	tft.textMode();
 	tft.textSetCursor(x, y);
 	tft.textEnlarge(fontSize);
-	if (warning) {
+	if (warning)
+	{
 		tft.textColor(RA8875_BLACK, RA8875_RED);
 	}
-	else {
+	else
+	{
 		tft.textColor(RA8875_WHITE, RA8875_BLACK);
 	}
 	tft.textWrite(charValue, len);
 	tft.textColor(RA8875_WHITE, RA8875_BLACK);
 }
 
-void printValues() {
-	while (true) {
-		if (canListener.vehicle.voltage != canListener.vehicle.prevVoltage) {
+void printValues()
+{
+	while (true)
+	{
+		if (canListener.vehicle.voltage != canListener.vehicle.prevVoltage)
+		{
 			char charValue[voltageDispLen];
 			lcdMutex.lock();
 			printFloat(
@@ -192,15 +198,16 @@ void printValues() {
 				charValue,
 				voltageDispLen,
 				3,
-				false
-			);
+				false);
 			tft.textWrite("v");
 			lcdMutex.unlock();
 		}
-		if (canListener.vehicle.prevOilTemp != canListener.vehicle.oilTemp) {
+		if (canListener.vehicle.prevOilTemp != canListener.vehicle.oilTemp)
+		{
 			char charValue[oilTempDispLen];
 			lcdMutex.lock();
-			if (canListener.vehicle.oilTemp > 130) {
+			if (canListener.vehicle.oilTemp > 130)
+			{
 				printFloatNoPoint(
 					oilTempPos[xPos],
 					oilTempPos[yPos],
@@ -209,10 +216,10 @@ void printValues() {
 					charValue,
 					oilTempDispLen,
 					3,
-					true
-				);
+					true);
 			}
-			else {
+			else
+			{
 				printFloatNoPoint(
 					oilTempPos[xPos],
 					oilTempPos[yPos],
@@ -221,17 +228,18 @@ void printValues() {
 					charValue,
 					oilTempDispLen,
 					3,
-					false
-				);
+					false);
 			}
 			tft.textEnlarge(2);
 			tft.textWrite(celcius);
 			lcdMutex.unlock();
 		}
-		if (canListener.vehicle.prevWaterTemp != canListener.vehicle.waterTemp) {
+		if (canListener.vehicle.prevWaterTemp != canListener.vehicle.waterTemp)
+		{
 			char charValue[waterTempDispLen];
 			lcdMutex.lock();
-			if (canListener.vehicle.waterTemp > 98) {
+			if (canListener.vehicle.waterTemp > 98)
+			{
 				printFloatNoPoint(
 					waterTempPos[xPos],
 					waterTempPos[yPos],
@@ -240,10 +248,10 @@ void printValues() {
 					charValue,
 					waterTempDispLen,
 					3,
-					true
-				);
+					true);
 			}
-			else {
+			else
+			{
 				printFloatNoPoint(
 					waterTempPos[xPos],
 					waterTempPos[yPos],
@@ -252,17 +260,18 @@ void printValues() {
 					charValue,
 					waterTempDispLen,
 					3,
-					false
-				);
+					false);
 			}
 			tft.textEnlarge(2);
 			tft.textWrite(celcius);
 			lcdMutex.unlock();
 		}
-		if (canListener.vehicle.prevEcuTemp != canListener.vehicle.ecuTemp) {
+		if (canListener.vehicle.prevEcuTemp != canListener.vehicle.ecuTemp)
+		{
 			char charValue[ecuTempDispLen];
 			lcdMutex.lock();
-			if (canListener.vehicle.ecuTemp > 80) {
+			if (canListener.vehicle.ecuTemp > 80)
+			{
 				char charValue[ecuTempDispLen];
 				printFloatNoPoint(
 					ecuTempPos[xPos],
@@ -272,10 +281,10 @@ void printValues() {
 					charValue,
 					ecuTempDispLen,
 					3,
-					true
-				);
+					true);
 			}
-			else {
+			else
+			{
 				printFloatNoPoint(
 					ecuTempPos[xPos],
 					ecuTempPos[yPos],
@@ -284,14 +293,14 @@ void printValues() {
 					charValue,
 					ecuTempDispLen,
 					3,
-					false
-				);
+					false);
 			}
 			tft.textEnlarge(2);
 			tft.textWrite(celcius);
 			lcdMutex.unlock();
 		}
-		if (canListener.vehicle.prevFuelPressure != canListener.vehicle.fuelPressure) {
+		if (canListener.vehicle.prevFuelPressure != canListener.vehicle.fuelPressure)
+		{
 			char charValue[fuelPressureDispLen];
 			lcdMutex.lock();
 			printFloat(
@@ -302,15 +311,16 @@ void printValues() {
 				charValue,
 				fuelPressureDispLen,
 				3,
-				false
-			);
+				false);
 			tft.textWrite("B");
 			lcdMutex.unlock();
 		}
-		if (canListener.vehicle.prevRPM != canListener.vehicle.rpm) {
+		if (canListener.vehicle.prevRPM != canListener.vehicle.rpm)
+		{
 			char charValue[rpmDispLen];
 			lcdMutex.lock();
-			if (canListener.vehicle.rpm > MAX_RPM - 500) {
+			if (canListener.vehicle.rpm > MAX_RPM - 500)
+			{
 				printInt(
 					rpmPos[xPos],
 					rpmPos[yPos],
@@ -319,10 +329,10 @@ void printValues() {
 					charValue,
 					rpmDispLen,
 					3,
-					true
-				);
+					true);
 			}
-			else {
+			else
+			{
 				printInt(
 					rpmPos[xPos],
 					rpmPos[yPos],
@@ -331,12 +341,12 @@ void printValues() {
 					charValue,
 					rpmDispLen,
 					3,
-					false
-				);
+					false);
 			}
 			lcdMutex.unlock();
 		}
-		if (canListener.vehicle.prevSpeed != canListener.vehicle.speed) {
+		if (canListener.vehicle.prevSpeed != canListener.vehicle.speed)
+		{
 			char charValue[speedDispLen];
 			lcdMutex.lock();
 			drawSpeedometer();
@@ -348,19 +358,21 @@ void printValues() {
 				charValue,
 				speedDispLen,
 				3,
-				false
-			);
+				false);
 			lcdMutex.unlock();
 			canListener.vehicle.prevSpeed = canListener.vehicle.speed;
 		}
-		if (canListener.vehicle.prevGear != canListener.vehicle.gear) {
-			if (canListener.vehicle.gear == 0) {
+		if (canListener.vehicle.prevGear != canListener.vehicle.gear)
+		{
+			if (canListener.vehicle.gear == 0)
+			{
 				lcdMutex.lock();
 				tft.drawChar(gearPos[xPos], gearPos[yPos], 'N', 0xffff, 0x0000, gearSize);
 				lcdMutex.unlock();
 				canListener.vehicle.prevGear = canListener.vehicle.gear;
 			}
-			else {
+			else
+			{
 				char gearDisp = 48 + canListener.vehicle.gear;
 				canListener.vehicle.prevGear = canListener.vehicle.gear;
 				lcdMutex.lock();
@@ -371,36 +383,40 @@ void printValues() {
 	}
 }
 
-void drawFanIcon() {
+void drawFanIcon()
+{
 	tft.drawXBitmap(
 		fanIconPos[xPos],
 		fanIconPos[yPos],
 		fanIcon,
 		fanWidth,
 		fanHeight,
-		RA8875_WHITE
-	);
+		RA8875_WHITE);
 }
 
-void drawFanState() {
-	while (true) {
-		if (canListener.vehicle.prevFanOn != canListener.vehicle.fanOn) {
+void drawFanState()
+{
+	while (true)
+	{
+		if (canListener.vehicle.prevFanOn != canListener.vehicle.fanOn)
+		{
 			canListener.vehicle.prevFanOn = canListener.vehicle.fanOn;
 			lcdMutex.lock();
 			tft.graphicsMode();
-			if (canListener.vehicle.prevFanOn) {
+			if (canListener.vehicle.prevFanOn)
+			{
 				tft.fillRect(disabledIconPos[xPos], 0, 100, 100, RA8875_BLACK);
 				drawFanIcon();
 			}
-			else {
+			else
+			{
 				tft.drawXBitmap(
 					disabledIconPos[xPos],
 					disabledIconPos[yPos],
 					disabledIcon,
 					disabledWidth,
 					disabledHeight,
-					RA8875_RED
-				);
+					RA8875_RED);
 			}
 			tft.textMode();
 			lcdMutex.unlock();
@@ -408,18 +424,23 @@ void drawFanState() {
 	}
 }
 
-void drawSpeedometer() {
-	if (canListener.vehicle.speed > canListener.vehicle.prevSpeed) {
-		for (int i = canListener.vehicle.prevSpeed; i < canListener.vehicle.speed; i++) {
+void drawSpeedometer()
+{
+	if (canListener.vehicle.speed > canListener.vehicle.prevSpeed)
+	{
+		for (int i = canListener.vehicle.prevSpeed; i < canListener.vehicle.speed; i++)
+		{
 
 			uint8_t red;
 			uint8_t green;
 
-			if (i <= 100) {
+			if (i <= 100)
+			{
 				green = 255;
 				red = i * 2.55;
 			}
-			else {
+			else
+			{
 				red = 255;
 				green = 255 - ((i - 100) * 2.55);
 			}
@@ -427,15 +448,18 @@ void drawSpeedometer() {
 			drawSpeedLine(i, (red << 11) | (green << 5));
 		}
 	}
-	else {
-		for (int i = canListener.vehicle.prevSpeed; i >= canListener.vehicle.speed; i--) {
+	else
+	{
+		for (int i = canListener.vehicle.prevSpeed; i >= canListener.vehicle.speed; i--)
+		{
 			drawSpeedLine(i, RA8875_BLACK);
 		}
 	}
 }
 
 // Draws the bar in an arc speedometer
-void drawSpeedLine(const uint8_t& value, const uint16_t& color) {
+void drawSpeedLine(const uint8_t &value, const uint16_t &color)
+{
 	int speedToDeg = 280 - value;
 	int u0 = (speedoOffsetRadius * sin(speedToDeg * (PI / 180))) + cX;
 	int v0 = (speedoOffsetRadius * cos(speedToDeg * (PI / 180))) + cY;
@@ -444,15 +468,19 @@ void drawSpeedLine(const uint8_t& value, const uint16_t& color) {
 	tft.drawLine(u0, v0, u1, v1, color);
 }
 
-void runShiftRegister() {
-	while (true) {
+void runShiftRegister()
+{
+	while (true)
+	{
 		// Close the latch to write into register memory
 		digitalWrite(SR_LATCH, LOW);
 		// Scale RPM to number of LEDs
-		if (canListener.vehicle.rpm < IDLE_RPM) {
+		if (canListener.vehicle.rpm < IDLE_RPM)
+		{
 			ledBarSetBits = canListener.vehicle.rpm / 1000;
 		}
-		else {
+		else
+		{
 			ledBarSetBits = ((canListener.vehicle.rpm - IDLE_RPM) / RPM_SCALE) + 3;
 		}
 
@@ -460,7 +488,8 @@ void runShiftRegister() {
 		uint8_t warning = warningSetBits | WARNING_LIGHT2 | WARNING_LIGHT4 | WARNING_LIGHT6 | WARNING_LIGHT8;
 
 		// Shift bits to register
-		for (int i = 0; i < SR_WARNINGBITS; i++) {
+		for (int i = 0; i < SR_WARNINGBITS; i++)
+		{
 
 			digitalWrite(SR_DATA_OUT, (warning & 0x1));
 			digitalWrite(SR_CLOCK_OUT, LOW);
@@ -468,11 +497,14 @@ void runShiftRegister() {
 			warning = warning >> 1;
 		}
 
-		for (int i = 0; i < SR_LEDBITS; i++) {
-			if (i < ledBarSetBits) {
+		for (int i = 0; i < SR_LEDBITS; i++)
+		{
+			if (i < ledBarSetBits)
+			{
 				digitalWrite(SR_DATA_OUT, HIGH);
 			}
-			else {
+			else
+			{
 				digitalWrite(SR_DATA_OUT, LOW);
 			}
 			// Manually set clock transition
@@ -492,98 +524,127 @@ uint16_t speedCount;
 bool reverse;
 bool demoOn;
 
-void demo() {
-	if (demoOn) {
-		if (reverse) {
-			if (canListener.vehicle.rpm != 0) {
+void demo()
+{
+	if (demoOn)
+	{
+		if (reverse)
+		{
+			if (canListener.vehicle.rpm != 0)
+			{
 				canListener.vehicle.rpm -= 25;
 			}
-			else {
+			else
+			{
 				canListener.vehicle.oilTemp = random(50, 100);
 				canListener.vehicle.waterTemp = random(50, 100);
 				canListener.vehicle.ecuTemp = random(40, 60);
 				canListener.vehicle.voltage = random(1100, 1400) / 100.0;
 				canListener.vehicle.fuelPressure = random(1000, 3000) / 1000.0;
 
-				if (canListener.vehicle.gear > 0) {
+				if (canListener.vehicle.gear > 0)
+				{
 					canListener.vehicle.gear--;
 					canListener.vehicle.rpm = 9000;
 				}
-				else {
+				else
+				{
 					canListener.vehicle.rpm = 0;
 					canListener.vehicle.speed = 0;
 				}
 			}
 		}
-		else {
-			if (canListener.vehicle.rpm != MAX_RPM) {
+		else
+		{
+			if (canListener.vehicle.rpm != MAX_RPM)
+			{
 				canListener.vehicle.rpm += 25;
 			}
-			else {
+			else
+			{
 				canListener.vehicle.oilTemp = random(50, 100);
 				canListener.vehicle.waterTemp = random(50, 100);
 				canListener.vehicle.ecuTemp = random(40, 60);
 				canListener.vehicle.voltage = random(1100, 1400) / 100.0;
 				canListener.vehicle.fuelPressure = random(1000, 3000) / 1000.0;
 
-				if (canListener.vehicle.gear < 6) {
+				if (canListener.vehicle.gear < 6)
+				{
 					canListener.vehicle.gear++;
 					canListener.vehicle.rpm = 2000;
 				}
-				else {
+				else
+				{
 					canListener.vehicle.rpm = MAX_RPM - 500;
 				}
 			}
 		}
 
-		if (reverse) {
-			if (canListener.vehicle.speed > 0) {
-				if (speedCount == 15) {
+		if (reverse)
+		{
+			if (canListener.vehicle.speed > 0)
+			{
+				if (speedCount == 15)
+				{
 					canListener.vehicle.speed--;
 					speedCount = 0;
 				}
-				else {
+				else
+				{
 					speedCount++;
 				}
 			}
 		}
-		else {
-			if (canListener.vehicle.speed < 200 && canListener.vehicle.gear != 0) {
-				if (speedCount == 15) {
+		else
+		{
+			if (canListener.vehicle.speed < 200 && canListener.vehicle.gear != 0)
+			{
+				if (speedCount == 15)
+				{
 					canListener.vehicle.speed++;
 					speedCount = 0;
 				}
-				else {
+				else
+				{
 					speedCount++;
 				}
 			}
 		}
 
-		if (canListener.vehicle.waterTemp > 80) {
+		if (canListener.vehicle.waterTemp > 80)
+		{
 			canListener.vehicle.fanOn = true;
 		}
-		else {
+		else
+		{
 			canListener.vehicle.fanOn = false;
 		}
 
-		if (canListener.vehicle.gear == 6 && canListener.vehicle.rpm == MAX_RPM) {
+		if (canListener.vehicle.gear == 6 && canListener.vehicle.rpm == MAX_RPM)
+		{
 			reverse = true;
 		}
-		if (reverse && canListener.vehicle.gear == 0 && canListener.vehicle.rpm == 0) {
+		if (reverse && canListener.vehicle.gear == 0 && canListener.vehicle.rpm == 0)
+		{
 			reverse = false;
 		}
 		delay(1);
 	}
 }
 
-void buttonHandler() {
-	while (true) {
-		if (digitalRead(BUTTON1)) {
-			if (demoOn) {
+void buttonHandler()
+{
+	while (true)
+	{
+		if (digitalRead(BUTTON1))
+		{
+			if (demoOn)
+			{
 				demoOn = false;
 				Can0.attachObj(&canListener);
 			}
-			else {
+			else
+			{
 				Can0.detachObj(&canListener);
 				demoOn = true;
 			}
@@ -593,18 +654,18 @@ void buttonHandler() {
 	}
 }
 
-
-
-void setup() {
+void setup()
+{
 	// Initialize serial console
 	Serial.begin(9600);
 
 	pinMode(BUTTON1, INPUT);
 	pinMode(BUTTON2, INPUT);
-	
+
 	// Initialise the display
 	Serial.println("RA8875 start");
-	while (!tft.begin(RA8875_800x480)) {
+	while (!tft.begin(RA8875_800x480))
+	{
 		Serial.println("RA8875 Not Found!");
 		delay(1000);
 	}
@@ -612,15 +673,16 @@ void setup() {
 	Serial.println("Found RA8875");
 
 	tft.displayOn(true);
-	tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
+	tft.GPIOX(true);							  // Enable TFT - display enable tied to GPIOX
 	tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
-	tft.PWM1out(0); // Start faded out
-	
+	tft.PWM1out(0);								  // Start faded out
+
 	//Draw logo and Fade in
 	tft.graphicsMode();
 	tft.fillScreen(RA8875_BLACK);
 	tft.drawXBitmap(logoPos[xPos], logoPos[yPos], logo, logoWidth, logoHeight, RA8875_RED);
-	for (uint8_t i = 0; i != 255; i += 5) {
+	for (uint8_t i = 0; i != 255; i += 5)
+	{
 		tft.PWM1out(i);
 		delay(10);
 	}
@@ -640,7 +702,7 @@ void setup() {
 
 	// Let the logo linger a bit
 	delay(1800);
-	
+
 	// Clear sceen
 	tft.fillScreen(RA8875_BLACK);
 	tft.textMode();
@@ -658,6 +720,7 @@ void setup() {
 	threads.addThread(buttonHandler);
 }
 
-void loop() {
+void loop()
+{
 	demo();
 }

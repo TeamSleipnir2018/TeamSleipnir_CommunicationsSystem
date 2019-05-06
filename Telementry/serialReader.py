@@ -21,18 +21,21 @@ import psycopg2
 from digi.xbee.devices import XBeeDevice
 from digi.xbee.exception import TimeoutException
 
-if os.name == "windows" or os.name == "nt" :
+if os.name == "windows" or os.name == "nt":
     PORT = "COM{}".format(sys.argv[1])
-elif os.name == "linux" or os.name == "posix" :
+elif os.name == "linux" or os.name == "posix":
     PORT = "/dev/ttyS{}".format(sys.argv[1])
 BAUD_RATE = 9600
 
 xbee = XBeeDevice(PORT, BAUD_RATE)
 message = None
 
+
 def signal_handler(signal, frame):
     xbee.close()
     sys.exit(0)
+
+
 signal.signal(signal.SIGINT, signal_handler)
 
 try:
@@ -40,6 +43,7 @@ try:
     cursor = conn.cursor()
 except:
     print("Unable to connect to the database")
+
 
 def main():
 
@@ -75,32 +79,34 @@ def main():
     print(" | Reading XBee data      |")
     print(" +------------------------+\n")
 
-    while True :
+    while True:
         try:
-            if not xbee.is_open() :
+            if not xbee.is_open():
                 xbee.open()
             message = xbee.read_data()
 
-            if message and message.data is not None :
+            if message and message.data is not None:
                 try:
-                    data = json.loads(re.split(r"(?=\{)(.*?)(?<=\})", str(message.data))[1])
+                    data = json.loads(
+                        re.split(r"(?=\{)(.*?)(?<=\})", str(message.data))[1])
                 except Exception as e:
                     print(e)
                 print(data)
 
                 MessageTime = data['time']
 
-                cursor.execute("SELECT time FROM vehicledata WHERE time = to_timestamp({})".format(MessageTime))
+                cursor.execute(
+                    "SELECT time FROM vehicledata WHERE time = to_timestamp({})".format(MessageTime))
                 conn.commit()
 
-                if cursor.fetchone() is None :
+                if cursor.fetchone() is None:
                     cursor.execute('''
                     INSERT INTO vehicledata (time)
                     VALUES (to_timestamp({}))
                     '''.format(MessageTime))
 
-                for key, value in data.items() :
-                    if key != "time" :
+                for key, value in data.items():
+                    if key != "time":
                         cursor.execute('''
                         UPDATE vehicledata 
                         SET {} = {}
@@ -111,6 +117,7 @@ def main():
         except TimeoutException as e:
             print(e)
     xbee.close()
+
 
 if __name__ == "__main__":
     main()

@@ -2,7 +2,8 @@
 #include "Vehicle.h"
 #include <FlexCAN.h>
 
-class CanListener : public CANListener {
+class CanListener : public CANListener
+{
 public:
 	// Vehicle class instance
 	Vehicle vehicle;
