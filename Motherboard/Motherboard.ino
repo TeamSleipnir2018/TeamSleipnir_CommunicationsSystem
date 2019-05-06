@@ -12,7 +12,6 @@ Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 
 #include <SPI.h>
 #include <RH_RF95.h>
-#include <SoftwareSerial.h>
 #include <stdint.h>
 //#include <FlexCAN.h>
 #include <SdFat.h>
@@ -21,6 +20,7 @@ Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 //#include "CanListener.h"
 #include "TeensyThreads.h"
 #include <TinyGPS.h>
+#include <SoftwareSerial.h>
 
 // CAN bus driver
 //CanListener canListener;
@@ -32,7 +32,7 @@ const int NUMBER_OF_MESSAGES = 4;
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences.
-const bool GPSECHO = true;
+const bool GPSE#include <SoftwareSerial.h>CHO = true;
 
 // Variables for Copernicus II GPS module
 float flat, flon;
@@ -46,6 +46,8 @@ void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 SdFatSdio sd;
 File outFile;
 char filename[20];
+File outFileimu;
+char filenameimu[20];
 
 // LoRa & Teensy 3.5 setup
 #define RF95_FREQ 434.0
@@ -57,6 +59,10 @@ const int COMMAND_SIZE = RH_RF95_MAX_MESSAGE_LEN;
 uint8_t COMMAND[COMMAND_SIZE];
 const uint8_t Pit_ID = 7;
 const uint8_t Car_ID = 6;
+
+#define IMUserial Serial4
+uint8_t IMU[19];
+bool newIMUData = false;
 
 // LoRa - Radio Frequency driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
@@ -115,6 +121,7 @@ void setup()
 	delay(500);
 	Serial.begin(9600);
 	Serial3.begin(4800);
+  	IMUserial.begin(115200);
 
 	while (!Serial)
 		;
@@ -150,6 +157,16 @@ void setup()
 	{
 		Serial.println("Error: failed to open file");
 	};
+
+	 sprintf(filenameimu, "IMU_%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
+
+	 //Create the File
+	 outFileimu = sd.open(filenameimu, FILE_WRITE);
+
+	 if (!outFileimu)
+	 {
+	   Serial.println("Error: failed to open file");
+	 };
 
 	threads.addThread(gpsRead);
 
@@ -196,8 +213,7 @@ void loop()
 
 	for (int i = 0; i < 1; i++)
 	{
-		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL);
-		sprintf(payload, {\"time\": %ld, \"pitch"\": %d, \"yaw\": %d, \"roll\": %d}!", time, pitch, yaw,roll); }
+		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL); 
 	}
 
 	if (outFile)
@@ -205,6 +221,65 @@ void loop()
 		outFile.write(payload);
 		outFile.flush();
 	}
+	//Lesa af IMU
+    int i=0;
+    while (IMUserial.available() > 0)
+    {
+      uint8_t c = IMUserial.read();
+      // Serial.write(c);   // uncomment this line if you want to see the IMU data flowing
+      IMU[i] = c;
+      i++;
+      newIMUData = true;
+      if(i > 18)
+        break;        
+    }
+  	//Skrifa a sd kort imu data
+	char payloadimu[50];
+	if (newIMUData)
+	{
+	  if (IMU[0] == 170 && IMU[1] == 170)
+	  {
+	    short lsbyaw = IMU[3];
+	    short msbyaw = (IMU[4]*256);
+	    short yaw = (lsbyaw + msbyaw)*0.01;
+
+	    short lsbpitch = IMU[5];
+	    short msbpitch = (IMU[6]*256);
+	    short pitch = (msbpitch + lsbpitch)*0.01;
+
+	    short lsbroll = IMU[7];
+	    short msbroll = (IMU[8]*256);
+	    short roll = (msbroll + lsbroll)*0.01;
+
+	    short lsbx = IMU[9];
+	    short msbx = (IMU[10]*256);
+	    short x = (msbx + lsbx)*(9.80665/1000);
+
+	    short lsby = IMU[11];
+	    short msby = (IMU[12]*256);
+	    short y = (msby + lsby)*(9.80665/1000);
+
+	    short lsbz = IMU[13];
+	    short msbz = (IMU[14]*256);
+	    short z = (msbz + lsbz)*(9.80665/1000);
+
+	      for (int i = 0; i < 1; i++)
+	      {
+	        sprintf(payloadimu, "{\"time\": %ld, \"pitch\": %d, \"yaw\": %d, \"roll\": %d, \"x-axis\": %d, \"y-axis\": %d, \"z-axis\": %d}!", time, yaw, pitch, roll, x, y, z); 
+	      } 
+	  }    
+	   newIMUData = false;
+	}
+	else
+	{
+	    delay(4);
+	}
+	if (outFileimu)
+	{
+	    outFileimu.write(payloadimu);
+	    outFileimu.flush();
+	}  
+
 }
 
 void sendMessageLoRa(uint8_t CMD)
