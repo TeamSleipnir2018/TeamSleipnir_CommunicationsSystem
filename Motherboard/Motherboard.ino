@@ -64,7 +64,7 @@ bool newIMUData = false;
 // LoRa - Radio Frequency driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-const int PAYLOAD_SIZE = 20; //payloadLength();
+//const int PAYLOAD_SIZE = 20; //payloadLength();
 char payload[PAYLOAD_SIZE];
 
 time_t getTeensy3Time()
@@ -84,6 +84,10 @@ void gpsRead()
 		// For one second we parse GPS data and report some key values
 		for (unsigned long start = millis(); millis() - start < 1000;)
 		{
+			if (!GPSserial.available())
+			{
+				//Serial.println("Gps is not available..");
+			}
 			while (GPSserial.available())
 			{
 				char c = GPSserial.read();
@@ -149,47 +153,53 @@ void setup()
 
 	//Create the File
 	outFile = sd.open(filename, FILE_WRITE);
-	outFileIMU = sd.open(outFileIMU, FILE_WRITE);
 
-	if (!outFile || !outFileIMU)
+	if (!outFile)
 	{
 		Serial.println("Error: failed to open file");
 	};
 
 	sprintf(filenameIMU, "IMU_%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
 
+	outFileIMU = sd.open(filenameIMU, FILE_WRITE);
+
+	if (!outFileIMU)
+	{
+		Serial.println("Error: failed to open file");
+	}
+
 	threads.addThread(gpsRead);
 
 	// Initialize the CAN bus
 	/*mask.flags.extended = 0;
-  	mask.flags.remote = 0;
-  	mask.id = 0;*/
-	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
-	Can0.attachObj(&canListener);
-	canListener.attachGeneralHandler();
+    mask.flags.remote = 0;
+    mask.id = 0;
+  Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
+  Can0.attachObj(&canListener);
+  canListener.attachGeneralHandler();*/
 }
 
 uint32_t timer = millis();
 
 void loop()
 {
-	Serial.print("This is a test.");
-	Serial.println(Can0.vehicle.rpm);
+	//Serial.print("This is a test.");
+	//Serial.println(Can0.vehicle.rpm);
 
 	if (newGpsData)
 	{
 		// Copernicuse GPS if new data write new data
 		// ToDo, breita serial print i SD.Write og Lora Send
-		Serial.print("LAT= ");
+		Serial.print("LAT = ");
 		Serial.print(flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6);
-		Serial.print(" LON= ");
+		Serial.print(" LON = ");
 		Serial.print(flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6);
 
-		Serial.print(" TIME= ");
+		Serial.print(" TIME = ");
 		Serial.print(hour(), DEC);
-		Serial.print(": ");
+		Serial.print(":");
 		Serial.print(minute(), DEC);
-		Serial.print(": ");
+		Serial.print(":");
 		Serial.print(second(), DEC);
 		Serial.print(", ");
 		Serial.println("0.");
@@ -221,7 +231,7 @@ void loop()
 	// Reading off the IMU
 	while (IMUserial.available() > 0)
 	{
-		for (int i = 0; i < IMU.size(); i++)
+		for (int i = 0; i < 19; i++)
 		{
 			uint8_t c = IMUserial.read();
 			// Serial.write(c);   // uncomment this line if you want to see the IMU data flowing
@@ -234,17 +244,17 @@ void loop()
 	char payloadIMU[50];
 
 	/*
-	* As IMU gives us data in two 8bit points
-	* One as the LSB (least significant bit) 
-	* and MSB ( most significant bit), we then have to
-	* puzzle them together. We do this by shifting MSB << 8 (or 2^8 or *256)
-	* and them add LSB with MSB. 
-	* The added LSB+MSB then has to be filtered, this is done with the data
-	* that SparkFun has, from HillcrestLabs 
-	* -> url: https://cdn.sparkfun.com/assets/1/3/4/5/9/BNO080_Datasheet_v1.3.pdf
-	* in chapter 1.3.5.2 - UART-RVC protocol. There they show how to convert this data from
-	* the IMU BNO080 to usable data. 
-	*/
+  * As IMU gives us data in two 8bit points
+  * One as the LSB (least significant bit) 
+  * and MSB ( most significant bit), we then have to
+  * puzzle them together. We do this by shifting MSB << 8 (or 2^8 or *256)
+  * and them add LSB with MSB. 
+  * The added LSB+MSB then has to be filtered, this is done with the data
+  * that SparkFun has, from HillcrestLabs 
+  * -> url: https://cdn.sparkfun.com/assets/1/3/4/5/9/BNO080_Datasheet_v1.3.pdf
+  * in chapter 1.3.5.2 - UART-RVC protocol. There they show how to convert this data from
+  * the IMU BNO080 to usable data. 
+  */
 	if (newIMUData)
 	{
 		if (IMU[0] == 170 && IMU[1] == 170)
@@ -282,6 +292,7 @@ void loop()
 			for (int i = 0; i < 1; i++)
 			{
 				sprintf(payloadIMU, "{\"time\": %ld, \"pitch\": %d, \"yaw\": %d, \"roll\": %d, \"x-axis\": %d, \"y-axis\": %d, \"z-axis\": %d}!", time, yaw, pitch, roll, x, y, z);
+				Serial.println(payloadIMU);
 			}
 		}
 		newIMUData = false;
