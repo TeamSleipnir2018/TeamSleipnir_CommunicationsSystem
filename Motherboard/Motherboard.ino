@@ -7,7 +7,7 @@ Hardware:
 !- Adafruit Ultimate GPS Breakout v3
 !- MCP2551 CAN transceiver
 
-Written by Einar Arnason && Örlygur && Hregggi
+Written by Einar Arnason && Örlygur && Hregggi && Kristbjörg
 ******************************************************************/
 
 #include <SPI.h>
@@ -173,10 +173,10 @@ void setup()
 	// Initialize the CAN bus
 	/*mask.flags.extended = 0;
     mask.flags.remote = 0;
-    mask.id = 0;
+    mask.id = 0;*/
   Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
   Can0.attachObj(&canListener);
-  canListener.attachGeneralHandler();*/
+  canListener.attachGeneralHandler();
 }
 
 uint32_t timer = millis();
@@ -184,7 +184,7 @@ uint32_t timer = millis();
 void loop()
 {
 	//Serial.print("This is a test.");
-	//Serial.println(Can0.vehicle.rpm);
+	Serial.println(canListener.vehicle.rpm);
 
 	if (newGpsData)
 	{
