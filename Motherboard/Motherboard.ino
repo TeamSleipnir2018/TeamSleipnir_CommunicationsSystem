@@ -4,8 +4,8 @@ RU Racing 2019 communications motherboard
 Hardware:
 - Teensy 3.5
 - LoRa RF95
-- Adafruit Ultimate GPS Breakout v3
-- MCP2551 CAN transceiver
+!- Adafruit Ultimate GPS Breakout v3
+!- MCP2551 CAN transceiver
 
 Written by Einar Arnason && Örlygur && Hregggi
 ******************************************************************/
@@ -221,7 +221,7 @@ void loop()
 	// Reading off the IMU
 	while (IMUserial.available() > 0)
 	{
-		for (int i = 0; i < 18; i++)
+		for (int i = 0; i < IMU.size(); i++)
 		{
 			uint8_t c = IMUserial.read();
 			// Serial.write(c);   // uncomment this line if you want to see the IMU data flowing
