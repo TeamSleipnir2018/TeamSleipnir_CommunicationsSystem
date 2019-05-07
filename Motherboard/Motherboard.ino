@@ -14,17 +14,17 @@ Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 #include <RH_RF95.h>
 #include <SoftwareSerial.h>
 #include <stdint.h>
-//#include <FlexCAN.h>
+#include <FlexCAN.h>
 #include <SdFat.h>
 #include <TimeLib.h>
 //#include "constants.h"
-//#include "CanListener.h"
+#include "CanListener.h"
 #include "TeensyThreads.h"
 #include <TinyGPS.h>
 
 // CAN bus driver
-//CanListener canListener;
-//CAN_filter_t mask;
+CanListener canListener;
+CAN_filter_t mask;
 
 // GPS object
 TinyGPS gps;
@@ -156,16 +156,20 @@ void setup()
 	// Initialize the CAN bus
 	/*mask.flags.extended = 0;
   	mask.flags.remote = 0;
-  	mask.id = 0;
+  	mask.id = 0;*/
   	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
   	Can0.attachObj(&canListener);
-  	canListener.attachGeneralHandler();*/
+  	canListener.attachGeneralHandler();
 }
 
 uint32_t timer = millis();
 
 void loop()
 {
+	Serial.print("This is a test.")
+	//Serial.println(canListener.vehicle.rpm);
+	Serial.println(Can0.vehicle.rpm);
+
 	if (newGpsData)
 	{
 		// Copernicuse GPS if new data write new data
