@@ -5,7 +5,7 @@ Hardware:
 - Teensy 3.5
 - LoRa RF95
 !- Adafruit Ultimate GPS Breakout v3
-!- MCP2551 CAN transceiver
+- MCP2562 CAN transceiver
 
 Written by Einar Arnason && Örlygur && Hregggi
 ******************************************************************/
