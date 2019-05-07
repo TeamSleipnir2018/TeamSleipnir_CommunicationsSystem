@@ -4,6 +4,10 @@
 /*
 	Pin assignment
 */
+#define RFM95_CS 10
+#define RFM_RST 25
+#define RFM95_INT 24
+#define ERRORLED 3
 
 const uint8_t CAN0TX_ALT = 1;
 const uint8_t CAN0RX_ALT = 1;

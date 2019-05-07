@@ -7,7 +7,7 @@ Hardware:
 - Adafruit Ultimate GPS Breakout v3
 - MCP2551 CAN transceiver
 
-Written by Einar Arnason && Örlygur Ólafsson && Hregggi
+Written by Einar Arnason && Örlygur && Hregggi
 ******************************************************************/
 
 #include <SPI.h>
@@ -16,7 +16,7 @@ Written by Einar Arnason && Örlygur Ólafsson && Hregggi
 #include <FlexCAN.h>
 #include <SdFat.h>
 #include <TimeLib.h>
-//#include "constants.h"
+#include "constants.h"
 #include "CanListener.h"
 #include "TeensyThreads.h"
 #include <TinyGPS.h>
@@ -28,38 +28,35 @@ CAN_filter_t mask;
 
 // GPS object
 TinyGPS gps;
-const int NUMBER_OF_MESSAGES = 4;
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences.
-const bool GPSE#include <SoftwareSerial.h>CHO = true;
+//const bool GPSE#include <SoftwareSerial.h>CHO = true;
 
 // Variables for Copernicus II GPS module
+#define GPSserial Serial3
 float flat, flon;
 bool newGpsData = false;
 
 // this keeps track of whether we're using the interrupt off by default!
-boolean usingInterrupt = false;
-void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
+//boolean usingInterrupt = false;
+//void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 
 // SD card variables
 SdFatSdio sd;
 File outFile;
 char filename[20];
-File outFileimu;
-char filenameimu[20];
+File outFileIMU;
+char filenameIMU[20];
 
 // LoRa & Teensy 3.5 setup
 #define RF95_FREQ 434.0
-#define RFM95_CS 10
-#define RFM_RST 25
-#define RFM95_INT 24
-#define ERRORLED 3
 const int COMMAND_SIZE = RH_RF95_MAX_MESSAGE_LEN;
 uint8_t COMMAND[COMMAND_SIZE];
 const uint8_t Pit_ID = 7;
 const uint8_t Car_ID = 6;
 
+// IMU - accelerometer variables
 #define IMUserial Serial4
 uint8_t IMU[19];
 bool newIMUData = false;
@@ -87,9 +84,9 @@ void gpsRead()
 		// For one second we parse GPS data and report some key values
 		for (unsigned long start = millis(); millis() - start < 1000;)
 		{
-			while (Serial3.available())
+			while (GPSserial.available())
 			{
-				char c = Serial3.read();
+				char c = GPSserial.read();
 				// Serial.write(c); // uncomment this line if you want to see the GPS data flowing
 				if (gps.encode(c))
 				{
@@ -120,8 +117,8 @@ void setup()
 {
 	delay(500);
 	Serial.begin(9600);
-	Serial3.begin(4800);
-  	IMUserial.begin(115200);
+	GPSserial.begin(4800);
+	IMUserial.begin(115200);
 
 	while (!Serial)
 		;
@@ -152,21 +149,14 @@ void setup()
 
 	//Create the File
 	outFile = sd.open(filename, FILE_WRITE);
+	outFileIMU = sd.open(outFileIMU, FILE_WRITE);
 
-	if (!outFile)
+	if (!outFile || !outFileIMU)
 	{
 		Serial.println("Error: failed to open file");
 	};
 
-	 sprintf(filenameimu, "IMU_%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
-
-	 //Create the File
-	 outFileimu = sd.open(filenameimu, FILE_WRITE);
-
-	 if (!outFileimu)
-	 {
-	   Serial.println("Error: failed to open file");
-	 };
+	sprintf(filenameIMU, "IMU_%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
 
 	threads.addThread(gpsRead);
 
@@ -174,38 +164,39 @@ void setup()
 	/*mask.flags.extended = 0;
   	mask.flags.remote = 0;
   	mask.id = 0;*/
-  	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
-  	Can0.attachObj(&canListener);
-  	canListener.attachGeneralHandler();
+	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
+	Can0.attachObj(&canListener);
+	canListener.attachGeneralHandler();
 }
 
 uint32_t timer = millis();
 
 void loop()
 {
-	Serial.print("This is a test.")
-	//Serial.println(canListener.vehicle.rpm);
+	Serial.print("This is a test.");
 	Serial.println(Can0.vehicle.rpm);
 
 	if (newGpsData)
 	{
 		// Copernicuse GPS if new data write new data
 		// ToDo, breita serial print i SD.Write og Lora Send
-		Serial.print("LAT=");
+		Serial.print("LAT= ");
 		Serial.print(flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6);
-		Serial.print(" LON=");
+		Serial.print(" LON= ");
 		Serial.print(flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6);
 
-		Serial.print(" TIME=");
+		Serial.print(" TIME= ");
 		Serial.print(hour(), DEC);
-		Serial.print(":");
+		Serial.print(": ");
 		Serial.print(minute(), DEC);
-		Serial.print(":");
+		Serial.print(": ");
 		Serial.print(second(), DEC);
-		Serial.print(",");
+		Serial.print(", ");
 		Serial.println("0.");
 		newGpsData = false;
 	}
+
+	// Writeout from data to SD card
 	char payload[30];
 
 	// TEMP ! for analog suspension sensors. This is a placeholder
@@ -213,11 +204,12 @@ void loop()
 	int FL = analogRead(A8);
 	int RR = analogRead(A7);
 	int RL = analogRead(A6);
+
 	long time = getTeensy3Time();
 
 	for (int i = 0; i < 1; i++)
 	{
-		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL); 
+		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL);
 	}
 
 	if (outFile)
@@ -225,65 +217,85 @@ void loop()
 		outFile.write(payload);
 		outFile.flush();
 	}
-	//Lesa af IMU
-    int i=0;
-    while (IMUserial.available() > 0)
-    {
-      uint8_t c = IMUserial.read();
-      // Serial.write(c);   // uncomment this line if you want to see the IMU data flowing
-      IMU[i] = c;
-      i++;
-      newIMUData = true;
-      if(i > 18)
-        break;        
-    }
-  	//Skrifa a sd kort imu data
-	char payloadimu[50];
+
+	// Reading off the IMU
+	while (IMUserial.available() > 0)
+	{
+		for (int i = 0; i < 18; i++)
+		{
+			uint8_t c = IMUserial.read();
+			// Serial.write(c);   // uncomment this line if you want to see the IMU data flowing
+			IMU[i] = c;
+			newIMUData = true;
+		}
+	}
+
+	// Writeout IMU data to SD card
+	char payloadIMU[50];
+
+	/*
+	* As IMU gives us data in two 8bit points
+	* One as the LSB (least significant bit) 
+	* and MSB ( most significant bit), we then have to
+	* puzzle them together. We do this by shifting MSB << 8 (or 2^8 or *256)
+	* and them add LSB with MSB. 
+	* The added LSB+MSB then has to be filtered, this is done with the data
+	* that SparkFun has, from HillcrestLabs 
+	* -> url: https://cdn.sparkfun.com/assets/1/3/4/5/9/BNO080_Datasheet_v1.3.pdf
+	* in chapter 1.3.5.2 - UART-RVC protocol. There they show how to convert this data from
+	* the IMU BNO080 to usable data. 
+	*/
 	if (newIMUData)
 	{
-	  if (IMU[0] == 170 && IMU[1] == 170)
-	  {
-	    short lsbyaw = IMU[3];
-	    short msbyaw = (IMU[4]*256);
-	    short yaw = (lsbyaw + msbyaw)*0.01;
+		if (IMU[0] == 170 && IMU[1] == 170)
+		{
+			// YAW data
+			short lsbyaw = IMU[3];
+			short msbyaw = (IMU[4] * 256);
+			short yaw = (lsbyaw + msbyaw) * 0.01;
 
-	    short lsbpitch = IMU[5];
-	    short msbpitch = (IMU[6]*256);
-	    short pitch = (msbpitch + lsbpitch)*0.01;
+			// PITCH data
+			short lsbpitch = IMU[5];
+			short msbpitch = (IMU[6] * 256);
+			short pitch = (msbpitch + lsbpitch) * 0.01;
 
-	    short lsbroll = IMU[7];
-	    short msbroll = (IMU[8]*256);
-	    short roll = (msbroll + lsbroll)*0.01;
+			// ROLL data
+			short lsbroll = IMU[7];
+			short msbroll = (IMU[8] * 256);
+			short roll = (msbroll + lsbroll) * 0.01;
 
-	    short lsbx = IMU[9];
-	    short msbx = (IMU[10]*256);
-	    short x = (msbx + lsbx)*(9.80665/1000);
+			// X-axis acceleration data
+			short lsbx = IMU[9];
+			short msbx = (IMU[10] * 256);
+			short x = (msbx + lsbx) * (9.80665 / 1000);
 
-	    short lsby = IMU[11];
-	    short msby = (IMU[12]*256);
-	    short y = (msby + lsby)*(9.80665/1000);
+			// Y-axis acceleration data
+			short lsby = IMU[11];
+			short msby = (IMU[12] * 256);
+			short y = (msby + lsby) * (9.80665 / 1000);
 
-	    short lsbz = IMU[13];
-	    short msbz = (IMU[14]*256);
-	    short z = (msbz + lsbz)*(9.80665/1000);
+			// Z-axis acceleration data
+			short lsbz = IMU[13];
+			short msbz = (IMU[14] * 256);
+			short z = (msbz + lsbz) * (9.80665 / 1000);
 
-	      for (int i = 0; i < 1; i++)
-	      {
-	        sprintf(payloadimu, "{\"time\": %ld, \"pitch\": %d, \"yaw\": %d, \"roll\": %d, \"x-axis\": %d, \"y-axis\": %d, \"z-axis\": %d}!", time, yaw, pitch, roll, x, y, z); 
-	      } 
-	  }    
-	   newIMUData = false;
+			for (int i = 0; i < 1; i++)
+			{
+				sprintf(payloadIMU, "{\"time\": %ld, \"pitch\": %d, \"yaw\": %d, \"roll\": %d, \"x-axis\": %d, \"y-axis\": %d, \"z-axis\": %d}!", time, yaw, pitch, roll, x, y, z);
+			}
+		}
+		newIMUData = false;
 	}
 	else
 	{
-	    delay(4);
+		delay(4);
 	}
-	if (outFileimu)
-	{
-	    outFileimu.write(payloadimu);
-	    outFileimu.flush();
-	}  
 
+	if (outFileIMU)
+	{
+		outFileIMU.write(payloadIMU);
+		outFileIMU.flush();
+	}
 }
 
 void sendMessageLoRa(uint8_t CMD)
