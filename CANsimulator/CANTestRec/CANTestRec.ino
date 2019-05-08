@@ -21,48 +21,42 @@ static uint8_t hex[17] = "0123456789abcdef";
 static void hexDump(uint8_t dumpLen, uint8_t *bytePtr)
 {
   uint8_t working;
-  while( dumpLen-- ) {
+  while (dumpLen--)
+  {
     working = *bytePtr++;
-    Serial.write( hex[ working>>4 ] );
-    Serial.write( hex[ working&15 ] );
+    Serial.write(hex[working >> 4]);
+    Serial.write(hex[working & 15]);
   }
   Serial.write('\r');
   Serial.write('\n');
 }
 
-
 // -------------------------------------------------------------
 void setup(void)
 {
-
-//  mask.flags.extended = 0;
-//  mask.flags.remote = 0;
+  //  mask.flags.extended = 0;
+  //  mask.flags.remote = 0;
+  mask.ext = 0;
+  mask.rtr = 0;
   mask.id = 0;
-  
+
   delay(1000);
   Serial.begin(9600);
   Serial.println("Hello Teensy CAN Recieve Test.");
-  
+
   Can0.begin(500000);
-
-
-
- 
 }
-
 
 // -------------------------------------------------------------
 void loop(void)
 {
   CAN_message_t inMsg;
-  while (Can0.available()) 
+  while (Can0.available())
   {
     Can0.read(inMsg);
-    Serial.print("CAN bus 0: "); hexDump(8, inMsg.buf);
+    Serial.print("CAN bus 0: ");
+    hexDump(8, inMsg.buf);
   }
-
-
-  
   delay(20);
   Serial.println("Im in a recieving loop.");
 }

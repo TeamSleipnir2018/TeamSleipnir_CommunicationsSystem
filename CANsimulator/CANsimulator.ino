@@ -145,8 +145,8 @@ void loop()
 	msg1.buf[6] = (uint8_t)speed;
 	msg1.buf[7] = 0;
 
-	/*while (!Can0.write(msg1, Can0.getFirstTxBox())) {
-  }*/
+	//while (!Can0.write(msg1, Can0.getFirstTxBox())) {}
+	Can0.write(msg1, Can0.getFirstTxBox());
 
 	// CAN message 2 payload
 	msg2.buf[0] = (uint8_t)oilTemp;
@@ -158,8 +158,8 @@ void loop()
 	msg2.buf[6] = speed;
 	msg2.buf[7] = speed >> 8;
 
-	while (!Can0.write(msg2, Can0.getLastTxBox())) {
-  }
+	//while (!Can0.write(msg2, Can0.getLastTxBox())){}
+	Can0.write(msg2, Can0.getLastTxBox());
 
 	if (gear == 6 && rpm == 14000)
 	{
