@@ -172,8 +172,11 @@ void setup()
 
 	// Initialize the CAN bus
 	/*mask.flags.extended = 0;
-    mask.flags.remote = 0;
-    mask.id = 0;*/
+    mask.flags.remote = 0;*/
+    mask.id = 0;
+	mask.ext = 0;
+	mask.rtr = 0;
+	mask.id = 0;
   Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
   Can0.attachObj(&canListener);
   canListener.attachGeneralHandler();
@@ -183,8 +186,11 @@ uint32_t timer = millis();
 
 void loop()
 {
-	//Serial.print("This is a test.");
-	Serial.println(canListener.vehicle.rpm);
+	CAN_message_t msg;
+	Serial.print("This is a test.");
+	Can0.read(msg);
+	Serial.println(msg.len);
+	delay(10000);
 
 	if (newGpsData)
 	{

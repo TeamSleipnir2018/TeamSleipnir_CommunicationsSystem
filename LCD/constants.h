@@ -56,7 +56,7 @@ const uint16_t fuelPressureIconPos[] = {
 const uint16_t disabledIconPos[] = {(uint16_t)(fanIconPos[xPos] - 15), (uint16_t)(fanIconPos[yPos] - 15)};
 
 // Circular speedometer vector
-int cX = 650;
+int cX = 650; 
 int cY = 250;
 uint16_t speedoOffsetRadius = 100;
 uint16_t speedoBarRadius = 30;

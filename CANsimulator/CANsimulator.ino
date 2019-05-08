@@ -128,6 +128,8 @@ void setup()
 	msg2.len = 8;
 	//msg2.flags.extended = 0;
 	//msg2.flags.remote = 0;
+	msg2.ext = 0;
+	msg2.rtr = 0;
 }
 
 void loop()
@@ -156,8 +158,8 @@ void loop()
 	msg2.buf[6] = speed;
 	msg2.buf[7] = speed >> 8;
 
-	/*while (!Can0.write(msg2, Can0.getLastTxBox())) {
-  }*/
+	while (!Can0.write(msg2, Can0.getLastTxBox())) {
+  }
 
 	if (gear == 6 && rpm == 14000)
 	{
