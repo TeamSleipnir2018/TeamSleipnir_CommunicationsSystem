@@ -48,6 +48,8 @@ File outFile;
 char filename[20];
 File outFileIMU;
 char filenameIMU[20];
+File filenameGPS;
+char filenameGPS[20];
 
 // LoRa & Teensy 3.5 setup
 #define RF95_FREQ 434.0
@@ -168,18 +170,27 @@ void setup()
 		Serial.println("Error: failed to open file");
 	}
 
+	sprintf(filenameGPS, "GPS_%d_%d_%d_%d_%d_%d.json", year(), month(), day(), hour(), minute(), second());
+
+	outFileGPS = sd.open(filenameGPS, FILE_WRITE);
+
+	if (!outFileGPS)
+	{
+		Serial.println("Error: failed to open file");
+	}
+
 	threads.addThread(gpsRead);
 
 	// Initialize the CAN bus
 	/*mask.flags.extended = 0;
-    mask.flags.remote = 0;*/
-    mask.id = 0;
+  mask.flags.remote = 0;*/
+	mask.id = 0;
 	mask.ext = 0;
 	mask.rtr = 0;
 	mask.id = 0;
-  Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
-  Can0.attachObj(&canListener);
-  canListener.attachGeneralHandler();
+	Can0.begin(500000, mask, CAN0TX_ALT, CAN0RX_ALT);
+	Can0.attachObj(&canListener);
+	canListener.attachGeneralHandler();
 }
 
 uint32_t timer = millis();
@@ -187,7 +198,8 @@ uint32_t timer = millis();
 void loop()
 {
 	CAN_message_t msg;
-	Serial.print("This is a test.");
+	char gpsReadMsg[50];
+	//Serial.print("This is a test.");
 	Can0.read(msg);
 	Serial.println(msg.len);
 	delay(10000);
@@ -195,7 +207,7 @@ void loop()
 	if (newGpsData)
 	{
 		// Copernicuse GPS if new data write new data
-		// ToDo, breita serial print i SD.Write og Lora Send
+		// ToDo, breyta serial print í Lora Send
 		Serial.print("LAT = ");
 		Serial.print(flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6);
 		Serial.print(" LON = ");
@@ -209,7 +221,19 @@ void loop()
 		Serial.print(second(), DEC);
 		Serial.print(", ");
 		Serial.println("0.");
+
+		for (int i = 0; i < 1; i++)
+		{
+			sprintf(gpsReadMsg, "{\"time\": %ld, \"LAT: \": %s, \" LON: \": %s}!", time, flat, flon);
+			//Serial.println(gpsReadMsg);
+		}
+
 		newGpsData = false;
+	}
+	if (outFileGPS)
+	{
+		outFile.write(gpsReadMsg);
+		outFile.flush();
 	}
 
 	// Writeout from data to SD card
@@ -226,6 +250,7 @@ void loop()
 	for (int i = 0; i < 1; i++)
 	{
 		sprintf(payload, "{\"time\": %ld, \"FR\": %d, \"FL\": %d, \"RR\": %d, \"RL\": %d}!", time, FR, FL, RR, RL);
+		//Serial.println(payload);
 	}
 
 	if (outFile)
@@ -298,7 +323,7 @@ void loop()
 			for (int i = 0; i < 1; i++)
 			{
 				sprintf(payloadIMU, "{\"time\": %ld, \"pitch\": %d, \"yaw\": %d, \"roll\": %d, \"x-axis\": %d, \"y-axis\": %d, \"z-axis\": %d}!", time, yaw, pitch, roll, x, y, z);
-				Serial.println(payloadIMU);
+				//Serial.println(payloadIMU);
 			}
 		}
 		newIMUData = false;
@@ -318,7 +343,7 @@ void loop()
 void sendMessageLoRa(uint8_t CMD)
 {
 	rf95.setHeaderId(Car_ID);
-	uint8_t buf[COMMAND_SIZE] = {"message"}; //{CMD};
+	uint8_t buf[COMMAND_SIZE] = {CMD};
 	uint8_t len = sizeof(buf);
 
 	rf95.send(buf, sizeof(buf));

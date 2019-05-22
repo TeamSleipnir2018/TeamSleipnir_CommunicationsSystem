@@ -153,7 +153,6 @@ void printFloatNoPoint(
 	const uint8_t &fontSize,
 	bool warning)
 {
-
 	sprintf(charValue, "%*d", len, (int)value);
 	prevValue = value;
 	printValue(x, y, charValue, len, fontSize, warning);
